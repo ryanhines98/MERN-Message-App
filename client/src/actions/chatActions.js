@@ -1,4 +1,5 @@
 import { io } from 'socket.io-client';
+import { addEvents }  from "./events";
 import { 
     ESTABLISH_SOCKET,
     DESTABLISH_SOCKET
@@ -8,9 +9,13 @@ const SERVER_URL = 'http://localhost:5000';
 
 export const connectSocket = () => (dispatch, getState) => {
     if(getState().auth.isAuthenticated) {
+
+        var socket = io(SERVER_URL);
+        addEvents(socket);
+
         dispatch({
             type: ESTABLISH_SOCKET,
-            payload: io(SERVER_URL)
+            payload: socket
         })
     } 
 }

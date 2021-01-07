@@ -1,0 +1,26 @@
+/*
+Database Schema
+*/
+
+Users:
+    id
+    name
+    email
+    password
+    date
+    contacts[]
+
+Conversation:
+    id
+    members[]
+
+Message:
+    id
+    conversation
+    sender
+    timestamp
+    text
+
+
+
+

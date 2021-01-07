@@ -8,11 +8,10 @@ Description:
         bodyparser [ used to parse requests ]
         passport [ authentication middleware ]
 */
-
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 
+const db = require("./db");
 const users = require("./routes/api/users");
 
 const app = require("express")();
@@ -35,26 +34,13 @@ app.use(
     bodyParser.json()
 );
 
-// db config
-const db = require("./config/keys").mongoURI;
-
-
-// connect to mongoDB
-mongoose.connect(
-    db,
-    { 
-        useNewUrlParser: true,
-        useUnifiedTopology: true 
-    }
-)
-.then( () => console.log("MongoDB successfully connected"))
-.catch( err => console.log(err) );
-
+db.connectDB();
 
 //passport middleware
 app.use(passport.initialize());
 //passport config function
 require("./config/passport")(passport);
+
 
 app.io.on("connection", (socket) => {
     console.log(socket.id + " has connected");
