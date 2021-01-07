@@ -1,24 +1,13 @@
-/*
-Description: 
-    main script for the server that creates the express server, 
-    applies middleware, connects to the MongoDB, sets the routes, 
-    establishes port number, and calls the config function
+const db = require("./config/db");
+const middleware = require("./config/middleware");
 
-    Middleware:
-        bodyparser [ used to parse requests ]
-        passport [ authentication middleware ]
-*/
-const bodyParser = require("body-parser");
-const passport = require("passport");
-
-const db = require("./db");
+// routes
 const users = require("./routes/api/users");
 
 const app = require("express")();
-
-const port = process.env.PORT || 5000;  // proccess.env.PORT is for Heroku
-const serverAddr = require("./config/keys").serverAddr;
+const port = process.env.PORT || 5000;
 const server = app.listen(port, () => console.log(`Server up and running on port ${port}!`) );
+const serverAddr = require("./config/keys").serverAddr;
 app.io = require("socket.io")(server, {
     cors: {
         origin: serverAddr,
@@ -26,27 +15,40 @@ app.io = require("socket.io")(server, {
     }
 });
 
-// apply bodyParser middleware
-app.use(
-    bodyParser.urlencoded({
-        extended: false
-    }),
-    bodyParser.json()
-);
-
+// apply middleware and connect to database
+middleware.apply(app);
 db.connectDB();
 
-//passport middleware
-app.use(passport.initialize());
-//passport config function
-require("./config/passport")(passport);
 
+// map to keep track of users connected by socket
+var clients = new Map();
 
 app.io.on("connection", (socket) => {
-    console.log(socket.id + " has connected");
+    console.log(socket.id + " connected");
+
+    socket.on('storeClientInfo', (data) => {
+        if(!clients.has(data.userid)) {
+            clients.set(data.userid, socket.id)
+
+            console.log('Clients: ');
+            console.log(clients);
+        } else {
+            socket.disconnect();
+        }
+    });
+
+    socket.on('message', (data) => {
+        socket.broadcast.emit('message', data);
+    });
 
     socket.on("disconnect", () => {
-        console.log(socket.id + " has disconnected");
+        console.log(socket.id + " disconnected");
+
+        for(let [key, value] of clients) {
+            if(value === socket.id) {
+                clients.delete(key);
+            }
+        }
     });
 });
 

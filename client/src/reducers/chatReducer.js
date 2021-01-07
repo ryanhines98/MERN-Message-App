@@ -4,7 +4,7 @@ const initialState = {
     socket: {}
 };
 
-export default function(state = initialState, action) {
+export default function chatReducer(state = initialState, action) {
     switch(action.type) {
         case ESTABLISH_SOCKET:
             return {

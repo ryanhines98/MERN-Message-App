@@ -11,7 +11,7 @@ const initialState = {
     loading: false
 };
 
-export default function(state = initialState, action) {
+export default function authReducer(state = initialState, action) {
     switch(action.type) {
         case SET_CURRENT_USER:
             // if the payload is not empty then it is authenticated

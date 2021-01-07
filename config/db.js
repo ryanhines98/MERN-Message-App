@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 function connectDB() {
     // db URI for connection
-    const db = require("./config/keys").mongoURI;
+    const db = require("./keys").mongoURI;
     // connect to mongoDB
     mongoose.connect(
         db,

@@ -1,15 +1,25 @@
 import { io } from 'socket.io-client';
+import store from '../store';
 
 const SERVER_URL = 'http://localhost:5000'; 
 
 export function createSocket() {
-    var socket = io(SERVER_URL);
+    var socket = io(
+        SERVER_URL,
+        { secure: true }
+    );
     addEvents(socket);
     return socket;
 }
 
 export function addEvents(socket) {
     socket.on('connect', function(data){
-        console.log('connection established');
+        const state = store.getState();
+        socket.emit('storeClientInfo', { userid:  state.auth.user.id });
+        console.log('Socket Connected!');
+    });
+
+    socket.on('message', function(data) {
+        console.log(data);
     });
 };
