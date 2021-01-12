@@ -14,7 +14,7 @@ import { logoutUser } from "../../actions/authActions";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flex: 1
+        flex: 1,
     },
     icon: {
         marginRight: theme.spacing(2)

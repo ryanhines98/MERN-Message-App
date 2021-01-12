@@ -3,53 +3,28 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
-import { logoutUser } from "../../actions/authActions";
 
-class Dashboard extends Component {
+import Chat from '../Chat';
+import Contacts from './Contacts';
 
-    onLogoutClick = e => {
-        e.preventDefault();
-        this.props.logoutUser();
-    };
+import { Grid } from '@material-ui/core';
 
-    render() {
-        const { user } = this.props.auth;
+function Dashboard(props) {
 
-        return (
-            <div style={{ height: "75vh" }} className="container valign-wrapper">
-                <div className="row">
-                    <div className="col s12 center-align">
-                        <h4>
-                            <b>Hey there,</b> {user.name.split(" ")[0]}
-                            <p className="flow-text grey-text text-darken-1">
-                                You are logged into a full-stack{" "}
-                                <span style={{ fontFamily: "monospace" }}>MERN</span> app 👏
-                            </p>
-                        </h4>
-                            
-                        <div className="col s6">
-                            <Link
-                                to="/chat"
-                                style={{
-                                    width: "150px",
-                                    borderRadius: "3px",
-                                    letterSpacing: "1.5px",
-                                    marginTop: "1rem"
-                                }}
-                                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                            >
-                                Chat
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            );
-        }
+    return (
+        <Grid container direction='column'>
+            <Grid item xs={2}>
+                <Contacts/>
+            </Grid>
+
+            <Grid item>
+                GRID ITEM
+            </Grid>
+        </Grid>
+    );
 }
 
 Dashboard.propTypes = {
-    logoutUser: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
 };
 
@@ -58,6 +33,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(
-    mapStateToProps,
-    { logoutUser }
+    mapStateToProps
 ) (Dashboard);
