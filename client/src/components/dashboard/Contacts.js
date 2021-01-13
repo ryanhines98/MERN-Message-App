@@ -1,17 +1,23 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 
 import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import {    ListSubheader, 
             Typography, 
-            Box,
             IconButton,
             Avatar,
-            Drawer
+            Drawer,
+            List,
+            ListItem,
+            ListItemText,
+            ListItemAvatar,
+            Divider,
+            Dialog,
+            DialogTitle,
+            DialogContent,
+            DialogContentText,
+            TextField,
+            DialogActions,
+            Button
         } from '@material-ui/core'
 
 import AddIcon from '@material-ui/icons/Add';
@@ -42,6 +48,15 @@ const useStyles = makeStyles((theme) => ({
 function Contacts() {
     const classes = useStyles();
     const contacts = [];
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    
+    const handleClose = () => {
+    setOpen(false);
+    };
 
     for(let i = 0; i < 50; i++) {
         contacts.push(
@@ -64,12 +79,44 @@ function Contacts() {
             <div className={classes.toolbar} />
                 <List className={classes.list}>
                     <ListSubheader className={classes.subheader}>
+
                         <Typography className={classes.title} variant=''>
                             CONTACTS
                         </Typography>
-                        <IconButton >
+
+                        <IconButton 
+                            color='secondary'
+                            onClick={handleClickOpen}
+                        >
                             <AddIcon/>
                         </IconButton>
+
+                        <Dialog open={open} onClose={handleClose}>
+                            <DialogTitle> Add Contact </DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Please Enter Desired User's ID to Add
+                                </DialogContentText>
+
+                                <TextField
+                                    margin="normal"
+                                    id="userid"
+                                    label="User ID"
+                                    variant="filled"
+                                    fullWidth
+                                />
+
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose} color='secondary'>
+                                    Cancel
+                                </Button>
+                                <Button onClick={handleClose} color="secondary">
+                                    Add
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+
                     </ListSubheader>
                     <Divider />
                     { contacts }
