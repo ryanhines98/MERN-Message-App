@@ -6,10 +6,15 @@ import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import { Paper } from '@material-ui/core';
+import {    ListSubheader, 
+            Typography, 
+            Box,
+            IconButton,
+            Avatar,
+            Drawer
+        } from '@material-ui/core'
 
-import Drawer from '@material-ui/core/Drawer';
+import AddIcon from '@material-ui/icons/Add';
 
 
 
@@ -22,7 +27,15 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper
     },
     item: {
-        width: '100%'
+        width: 350
+    },
+    subheader: {
+        display: 'flex',
+        justifyContent: 'space-between'
+    },
+    title: {
+        display: 'inline',
+        fontSize: '1.5em'
     }
 }));
 
@@ -50,6 +63,15 @@ function Contacts() {
         >
             <div className={classes.toolbar} />
                 <List className={classes.list}>
+                    <ListSubheader className={classes.subheader}>
+                        <Typography className={classes.title} variant=''>
+                            CONTACTS
+                        </Typography>
+                        <IconButton >
+                            <AddIcon/>
+                        </IconButton>
+                    </ListSubheader>
+                    <Divider />
                     { contacts }
                 </List>
         </Drawer>
