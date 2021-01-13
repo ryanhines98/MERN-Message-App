@@ -13,7 +13,10 @@ import PropTypes from "prop-types";
 import { logoutUser } from "../../actions/authActions";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
+    bar: {
+        zIndex: theme.zIndex.drawer + 1
+    },
+    title: {
         flex: 1,
     },
     icon: {
@@ -49,10 +52,10 @@ function Navbar(props) {
 
     const classes = useStyles();
     return (
-        <Appbar position='static' color='secondary'>
+        <Appbar position='absolute' color='secondary' className={classes.bar}>
             <Toolbar>
                     <CodeIcon fontSize='large' className={classes.icon} />
-                    <Typography variant='h6' className={classes.root} >
+                    <Typography variant='h6' className={classes.title} >
                         MERN Message Application
                     </Typography>
                 { props.isAuthenticated && <Button variant='contained' onClick={onLogoutClick}>Logout</Button> }

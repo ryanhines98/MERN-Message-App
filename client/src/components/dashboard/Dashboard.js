@@ -6,21 +6,34 @@ import { connect } from "react-redux";
 
 import Chat from '../Chat';
 import Contacts from './Contacts';
+import { makeStyles } from '@material-ui/core/styles';
+import { Paper } from '@material-ui/core';
+import Navbar from '../layout/Navbar';
 
-import { Grid } from '@material-ui/core';
+//import Drawer from '@material-ui/core/Drawer';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        diplay: 'flex'
+    },
+    paper: {
+        height: '100%',
+        width: 200,
+        padding: 5,
+        margin: 10
+    },
+}));
+
+
 
 function Dashboard(props) {
+    const classes = useStyles();
 
     return (
-        <Grid container direction='column'>
-            <Grid item xs={2}>
-                <Contacts/>
-            </Grid>
-
-            <Grid item>
-                GRID ITEM
-            </Grid>
-        </Grid>
+        <div className={classes.root}>
+            <Navbar/>
+            <Contacts/>
+        </div>
     );
 }
 
