@@ -7,10 +7,7 @@ import { connect } from "react-redux";
 import Chat from '../Chat';
 import Contacts from './Contacts';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
 import Navbar from '../layout/Navbar';
-
-//import Drawer from '@material-ui/core/Drawer';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,8 +20,6 @@ const useStyles = makeStyles((theme) => ({
         margin: 10
     },
 }));
-
-
 
 function Dashboard(props) {
     const classes = useStyles();
