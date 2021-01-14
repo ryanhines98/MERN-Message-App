@@ -47,13 +47,15 @@ function Login(props) {
     // }
 
     useEffect(() => {
-        if (props.auth.isAuthenticated) {
-            props.history.push("/dashboard");
-        }
+        if(!mounted.current) {
+            if (props.auth.isAuthenticated) props.history.push("/dashboard");
+            mounted.current = true;
+        } else {
+            if (props.auth.isAuthenticated) props.history.push("/dashboard");
 
-        if (mounted.current && props.errors) {
-            setErrors(props.errors);
-            console.log(props.errors);
+            if (props.errors) {
+                setErrors(props.errors);
+            }
         }
     }, [
         props.auth.isAuthenticated,
@@ -171,7 +173,7 @@ function Login(props) {
                     style={{minHeight: '100vh'}}  
                 >
                     <Grid item xs={12}>
-                        <Paper variant='outlined' sqaure className={classes.paper}>
+                        <Paper variant='outlined' className={classes.paper}>
                             <div>
                                 <IconButton href='/' edge='start'>
                                     <ArrowBackIcon />
@@ -197,7 +199,7 @@ function Login(props) {
                                     onChange={ (e)=> {e.preventDefault(); setEmail(e.target.value)} }
                                     id='email'
                                     value={email}
-                                    error={errors.email || errors.emailnotfound ? true : false}
+                                    error={errors.email || errors.emailnotfound}
                                 />
                                 <span className={classes.error}>
                                     {errors.email}
@@ -211,7 +213,7 @@ function Login(props) {
                                     onChange={ (e)=> {e.preventDefault(); setPassword(e.target.value)} }
                                     id='password'
                                     value={password}
-                                    error={errors.password || errors.passwordincorrect ? true : false}
+                                    error={errors.password || errors.passwordincorrect}
                                 />
                                 <span className={classes.error}>
                                     {errors.password}

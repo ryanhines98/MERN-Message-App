@@ -80,7 +80,7 @@ function Contacts() {
                 <List className={classes.list}>
                     <ListSubheader className={classes.subheader}>
 
-                        <Typography className={classes.title} variant=''>
+                        <Typography className={classes.title} variant='span'>
                             CONTACTS
                         </Typography>
 
