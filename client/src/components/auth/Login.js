@@ -51,10 +51,15 @@ function Login(props) {
             props.history.push("/dashboard");
         }
 
-        if(mounted.current && props.errors) {
+        if (mounted.current && props.errors) {
             setErrors(props.errors);
-        } 
-    }, []);
+            console.log(props.errors);
+        }
+    }, [
+        props.auth.isAuthenticated,
+        props.errors,
+        props.history
+    ]);
 
     // componentWillReceiveProps(nextProps) {
     //     if (nextProps.auth.isAuthenticated) {
@@ -78,7 +83,6 @@ function Login(props) {
             email,
             password
         };
-        console.log(userData);
         props.loginUser(userData);
     };
 

@@ -26,7 +26,6 @@ function Dashboard(props) {
 
     return (
         <div className={classes.root}>
-            <Navbar/>
             <Contacts/>
         </div>
     );
