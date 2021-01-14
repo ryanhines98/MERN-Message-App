@@ -1,154 +1,174 @@
-import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { registerUser } from "../../actions/authActions";
-import classnames from "classnames";
 
-class Register extends Component {
-  constructor() {
-        super();
-        this.state = {
-            name: "",
-            email: "",
-            password: "",
-            password2: "",
-            errors: {}
-        };
+import { 
+        Container,
+        Grid,
+        Paper,
+        IconButton,
+        Typography,
+        TextField,
+        Link,
+        Button
+    } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        padding: 30
+    },
+    error: {
+        color: 'red'
+    },
+    button: {
+        marginTop: 15,
+        width: '100%'
     }
+}));
 
-    componentDidMount() {
-        // If logged in and user navigates to Register page, should redirect them to dashboard
-        if (this.props.auth.isAuthenticated) {
-          this.props.history.push("/dashboard");
+function Register(props) {
+
+    const mounted = useRef();
+    const classes = useStyles();
+
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [password2, setPassword2] = useState("");
+    const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        if(!mounted.current) {
+            if (props.auth.isAuthenticated) props.history.push("/dashboard");
+            mounted.current = true;
+        } else {
+            if (props.auth.isAuthenticated) props.history.push("/dashboard");
+
+            if (props.errors) {
+                setErrors(props.errors);
+            }
         }
-    }
+    }, [
+        props.auth.isAuthenticated,
+        props.errors,
+        props.history
+    ]);
 
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.errors) {
-            this.setState({
-                errors: nextProps.errors
-            });
-        }
-    }
-
-    onChange = e => {
-        this.setState({ [e.target.id]: e.target.value });
-    };
-
-    onSubmit = e => {
+    const onSubmit = e => {
         e.preventDefault();
         const newUser = {
-            name: this.state.name,
-            email: this.state.email,
-            password: this.state.password,
-            password2: this.state.password2
+            name: name,
+            email: email,
+            password: password,
+            password2: password2
         };
         console.log(newUser);
-        this.props.registerUser(newUser, this.props.history); 
+        props.registerUser(newUser, props.history); 
     };
 
-    render() {
-        const { errors } = this.state;
-        return (
-            <div className="container">
-                <div className="row">
-                    <div className="col s8 offset-s2">
-                        <Link to="/" className="btn-flat waves-effect">
-                            <i className="material-icons left">keyboard_backspace</i> Back to
-                            home
-                        </Link>
-
-                        <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-                            <h4>
-                                <b>Register</b> below
-                            </h4>
-                            <p className="grey-text text-darken-1">
-                                Already have an account? <Link to="/login">Log in</Link>
-                            </p>
+    return(
+        <Container maxWidth="sm">
+            <Grid 
+                container 
+                spacing={0}
+                direction="column"
+                alignItems="center"
+                justify="center"
+                style={{minHeight: '100vh'}}  
+            >
+                <Grid item xs={12}>
+                    <Paper variant='outlined' className={classes.paper}>
+                        <div>
+                            <IconButton href='/' edge='start'>
+                                <ArrowBackIcon />
+                            </IconButton>
+                            <Typography display='inline'>
+                                Back to Home
+                            </Typography>
                         </div>
 
-                    <form noValidate onSubmit={this.onSubmit}>
-                        <div className="input-field col s12">
-                            <input
-                                onChange={this.onChange}
-                                value={this.state.name}
+                        <Typography variant='h2'>
+                            Register
+                        </Typography>
+                        <Typography>
+                            Already Have an Account? <Link href='/login'>Login</Link>
+                        </Typography>
+
+                        <form onSubmit={onSubmit}>
+
+                            <TextField
+                                variant='standard'
+                                label='Name'
+                                fullWidth
+                                onChange={ (e)=> {e.preventDefault(); setName(e.target.value)} }
+                                id='name'
+                                value={name}
                                 error={errors.name}
-                                id="name"
-                                type="text"
-                                className={classnames("", {
-                                    invalid: errors.name
-                                })}
                             />
-                            <label htmlFor="name">Name</label>
-                            <span className="red-text">{errors.name}</span>
-                        </div>
+                            <span className={classes.error}>
+                                {errors.name}
+                            </span>
 
-                        <div className="input-field col s12">
-                            <input
-                                onChange={this.onChange}
-                                value={this.state.email}
+                            <TextField
+                                variant='standard'
+                                label='Email'
+                                fullWidth
+                                onChange={ (e)=> {e.preventDefault(); setEmail(e.target.value)} }
+                                id='email'
+                                value={email}
                                 error={errors.email}
-                                id="email"
-                                type="email"
-                                className={classnames("", {
-                                    invalid: errors.email
-                                })}
                             />
-                            <label htmlFor="email">Email</label>
-                            <span className="red-text">{errors.email}</span>
-                        </div>
+                            <span className={classes.error}>
+                                {errors.email}
+                            </span>
 
-                        <div className="input-field col s12">
-                            <input
-                                onChange={this.onChange}
-                                value={this.state.password}
+                            <TextField
+                                variant='standard'
+                                label='Password'
+                                fullWidth
+                                onChange={ (e)=> {e.preventDefault(); setPassword(e.target.value)} }
+                                id='password'
+                                value={password}
                                 error={errors.password}
-                                id="password"
-                                type="password"
-                                className={classnames("", {
-                                    invalid: errors.password
-                                })}
+                                type='password'
                             />
-                            <label htmlFor="password">Password</label>
-                            <span className="red-text">{errors.password}</span>
-                        </div>
+                            <span className={classes.error}>
+                                {errors.password}
+                            </span>
 
-                        <div className="input-field col s12">
-                            <input
-                                onChange={this.onChange}
-                                value={this.state.password2}
+                            <TextField
+                                variant='standard'
+                                label='Enter Password Again'
+                                fullWidth
+                                onChange={ (e)=> {e.preventDefault(); setPassword2(e.target.value)} }
+                                id='password2'
+                                value={password2}
                                 error={errors.password2}
-                                id="password2"
-                                type="password"
-                                className={classnames("", {
-                                    invalid: errors.password2
-                                })}
+                                type='password'
                             />
-                            <label htmlFor="password2">Confirm Password</label>
-                            <span className="red-text">{errors.password2}</span>
-                        </div>
+                            <span className={classes.error}>
+                                {errors.password2}
+                            </span>
 
-                        <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-                            <button
-                                style={{
-                                    width: "150px",
-                                    borderRadius: "3px",
-                                    letterSpacing: "1.5px",
-                                    marginTop: "1rem"
-                                }}
-                                type="submit"
-                                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                            <Button 
+                                variant='contained'
+                                color='primary'
+                                className={classes.button}
+                                type='submit'
                             >
-                            Sign up
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        );
-    }
+                                Sign Up
+                            </Button>
+
+                        </form>
+                    </Paper>
+                </Grid>
+            </Grid>
+        </Container>
+    );
 }
 
 const mapStateToProps = state => ({
