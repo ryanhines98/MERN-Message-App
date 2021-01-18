@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { addContact, clearErrors } from "../../actions/userActions";
+import { addContact, setErrors } from "../../actions/userActions";
 
 import {
     Dialog,
@@ -11,7 +11,8 @@ import {
     TextField,
     DialogActions,
     Button
-} from '@material-ui/core'
+} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 class ContactForm extends Component {
@@ -23,22 +24,26 @@ class ContactForm extends Component {
             errors: this.props.errors,
             open: this.props.open
         };
+        this.addContact = addContact.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.errors) this.setState({ errors: nextProps.errors });
+        if( !(Object.keys(nextProps.errors).length === 0) )
+            this.setState({ errors: nextProps.errors });
     }
 
-    handleContact = () => {
-        this.props.addContact(this.state.email);
-    
-        if(!this.state.errors)
-            this.props.handleClose();
+    handleContact = async () => {
+        const errors = await this.addContact(this.state.email);
+        if(errors){
+            this.props.setErrors(errors);
+        } else {
+            this.handleClose();
+        }
     };
 
     handleClose = () => {
         if(this.state.errors) this.setState({ errors: {} });
-        if(this.props.errors) this.props.clearErrors();
+        if(this.props.errors) this.props.setErrors({});
         this.props.handleClose();
     }
 
@@ -51,7 +56,19 @@ class ContactForm extends Component {
         return(
             <Dialog open={this.props.open} onClose={this.handleClose}>
 
-                <DialogTitle> Add Contact </DialogTitle>
+                <DialogTitle>
+                    <div
+                        style={{
+                            display:'flex',
+                            justifyContent: 'space-between'
+                        }}
+                    >
+                        Add Contact 
+                        <Button onClick={this.handleClose}>
+                            <CloseIcon/>
+                        </Button>
+                    </div> 
+                </DialogTitle>
 
                 <DialogContent>
                     <DialogContentText>
@@ -75,9 +92,6 @@ class ContactForm extends Component {
                 </DialogContent>
 
                 <DialogActions>
-                    <Button onClick={this.handleClose} color='primary'>
-                        Cancel
-                    </Button>
                     <Button onClick={this.handleContact} color='primary'>
                         Add
                     </Button>
@@ -101,5 +115,5 @@ ContactForm.propTypes = {
 
 export default connect(
     mapStateToProps,
-    { addContact, clearErrors }
+    { setErrors }
 ) (ContactForm);
