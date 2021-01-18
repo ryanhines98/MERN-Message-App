@@ -1,13 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-
 import { connect } from "react-redux";
-
-import Chat from '../Chat';
 import Contacts from './Contacts';
 import { makeStyles } from '@material-ui/core/styles';
-import Navbar from '../layout/Navbar';
 
 const useStyles = makeStyles((theme) => ({
     root: {

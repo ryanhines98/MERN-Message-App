@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
+const passport = require('passport');
 
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
@@ -85,7 +86,8 @@ module.exports = function(io) {
                     // create JWT payload
                     const payload = {
                         id: user.id,
-                        name: user.name
+                        name: user.name,
+                        contacts: user.contacts
                     };
 
                     // sign token
@@ -111,6 +113,25 @@ module.exports = function(io) {
                         .json({ passwordincorrect: "Password incorrect" });
                 }
             });
+        });
+    });
+
+
+    // @route POST api/users/login
+    // @desc Add Contact to Database and Return Contact information
+    // @access private
+    router.post('/contacts', passport.authenticate('jwt', {session: false}), (req, res) => {
+        const { email } = req.body;
+
+        User.findOne({ email }).then(user => { 
+            if(!user) {
+                return res.status(404).json({ usernotfound: 'User not found' });
+            } else {
+                return res.json({
+                    sucess: true,
+                    email: email
+                });
+            }
         });
     });
 

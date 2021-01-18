@@ -18,8 +18,8 @@ const opts = {};
 opts.secretOrKey = keys.secretOrKey;
 // 'jwtFromRequest' is required and is a function which accepts a request and returns
 //  either a JWT as a string or null
-//     - 'fromAuthHeaderAsBearerToken' is an extractor that looks for the JWT 
-//        in the Authorization header with scheme 'bearer'
+//     - 'fromAuthHeaderAsBearerToken' is an extractor that looks in the JWT 
+//        for the Authorization header with scheme 'bearer'
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken(); 
 
 
@@ -31,7 +31,14 @@ module.exports = passport => {
         User.findById(jwt_payload.id)
             .then(user => {
                 if (user) {
-                    return done(null, user);
+                  passport = {
+                    _id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    password: user.password,
+                    date: user.date
+                  }
+                  return done(null, passport);
                 }
                 return done(null, false);
             })

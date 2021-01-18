@@ -2,27 +2,16 @@ import React, { useState } from "react";
 
 import { makeStyles } from '@material-ui/core/styles';
 import {    ListSubheader, 
-            Typography, 
             IconButton,
-            Avatar,
             Drawer,
             List,
-            ListItem,
-            ListItemText,
-            ListItemAvatar,
-            Divider,
-            Dialog,
-            DialogTitle,
-            DialogContent,
-            DialogContentText,
-            TextField,
-            DialogActions,
-            Button
-        } from '@material-ui/core'
-
+            Divider
+} from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 
-
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import ContactForm from "./ContactForm";
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -33,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper
     },
     item: {
-        width: 350
+        width: '18rem'
     },
     subheader: {
         display: 'flex',
@@ -41,89 +30,97 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         display: 'inline',
-        fontSize: '1.5em'
+        fontSize: '1.5rem'
     }
 }));
 
-function Contacts() {
+function Contacts(props) {
     const classes = useStyles();
-    const contacts = [];
+
     const [open, setOpen] = useState(false);
+    const [contacts, setContacts] = useState([]);
 
     const handleClickOpen = () => {
         setOpen(true);
     };
     
     const handleClose = () => {
-    setOpen(false);
+        setOpen(false);
     };
 
-    for(let i = 0; i < 50; i++) {
-        contacts.push(
-        <ListItem button divider className={classes.item}>
-            <ListItemAvatar>
-                <Avatar />
-            </ListItemAvatar>
-            <ListItemText 
-                primary='Ryan Hines'
-                secondary='ello govna'
-            />
-        </ListItem>);
-    }
+    // props.contacts.forEach(e => {
+    //     contacts.push(
+    //         <ListItem button divider className={classes.item}>
+    //             <ListItemAvatar>
+    //                 <Avatar />
+    //             </ListItemAvatar>
+    //             <ListItemText 
+    //                 primary='Ryan Hines'
+    //                 secondary='ello govna'
+    //             />
+    //         </ListItem>
+    //     );
+    // });
+
+    // for(let i = 0; i < 50; i++) {
+    //     contacts.push(
+    //     <ListItem button divider className={classes.item}>
+    //         <ListItemAvatar>
+    //             <Avatar />
+    //         </ListItemAvatar>
+    //         <ListItemText 
+    //             primary='Ryan Hines'
+    //             secondary='ello govna'
+    //         />
+    //     </ListItem>);
+    // }
 
     return(
         <Drawer
-                className={classes.drawer}
-                variant='permanent'
+            className={classes.drawer}
+            variant='permanent'
         >
             <div className={classes.toolbar} />
-                <List className={classes.list}>
-                    <ListSubheader className={classes.subheader}>
 
-                        <Typography className={classes.title} variant='span'>
-                            CONTACTS
-                        </Typography>
+            <List className={classes.list}>
 
-                        <IconButton 
-                            color='secondary'
-                            onClick={handleClickOpen}
-                        >
-                            <AddIcon/>
-                        </IconButton>
+                <ListSubheader className={classes.subheader}>
+                    <span className={classes.title}>
+                        CONTACTS
+                    </span>
 
-                        <Dialog open={open} onClose={handleClose}>
-                            <DialogTitle> Add Contact </DialogTitle>
-                            <DialogContent>
-                                <DialogContentText>
-                                    Please Enter Desired User's ID to Add
-                                </DialogContentText>
+                    {/* Add Button for adding a Contact */}
+                    <IconButton 
+                        color='primary'
+                        onClick={handleClickOpen}
+                    > <AddIcon/> </IconButton>
 
-                                <TextField
-                                    margin="normal"
-                                    id="userid"
-                                    label="User ID"
-                                    variant="filled"
-                                    fullWidth
-                                />
+                    {/* Form for adding a Contact on button Press */}
+                    <ContactForm open={open} handleClose={handleClose} />
 
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={handleClose} color='secondary'>
-                                    Cancel
-                                </Button>
-                                <Button onClick={handleClose} color="secondary">
-                                    Add
-                                </Button>
-                            </DialogActions>
-                        </Dialog>
+                </ListSubheader>
 
-                    </ListSubheader>
-                    <Divider />
-                    { contacts }
-                </List>
+                <Divider />
+
+                { contacts }
+
+            </List>
+
         </Drawer>
     );
 
 }
 
-export default Contacts;
+const mapStateToProps = state => ({
+    contacts: state.auth.user.contacts,
+    errors: state.errors
+});
+
+Contacts.propTypes = {
+    contacts: PropTypes.array.isRequired,
+    errors: PropTypes.object.isRequired
+}
+
+export default connect(
+    mapStateToProps
+) (Contacts);

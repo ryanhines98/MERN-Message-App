@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 import Appbar from '@material-ui/core/Appbar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -7,8 +6,7 @@ import CodeIcon from '@material-ui/icons/Code';
 import { makeStyles } from '@material-ui/core/styles';
 import { 
         Typography,
-        Button,
-        IconButton
+        Button
     } from '@material-ui/core';
 
 import { connect } from "react-redux";
@@ -35,7 +33,7 @@ function Navbar(props) {
 
     const classes = useStyles();
     return (
-        <Appbar position='absolute' color='secondary' className={classes.bar}>
+        <Appbar position='absolute' color='primary' className={classes.bar}>
             <Toolbar>
                 <CodeIcon fontSize='large' className={classes.icon}/>
                 <Typography variant='h6' className={classes.title} >
