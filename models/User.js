@@ -21,8 +21,15 @@ const UserSchema = new Schema({
     },
     contacts: {
         type: [{
-            type: Schema.Types.ObjectId,
-            ref: 'users'
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: 'users',
+                required: true
+            },
+            name: {
+                type: String,
+                required: true
+            }
         }],
         default: []
     }

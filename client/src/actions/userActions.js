@@ -1,19 +1,31 @@
 import axios from "axios";
-import { GET_ERRORS } from "./types";
+import { GET_ERRORS, UPDATE_CONTACT } from "./types";
 
-export const addContact = (email) => {
-    
-    let errors = axios
+export const addContact = (email) => dispatch => {
+    axios
         .post('api/users/contacts', { email })
         .then(res => {
-            console.log(res.data);
-            return false;
+            // console.log(res.data);
+            updateContact(res.data);
         })
         .catch(err => {
-            return err.response.data;
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            });
         });
-    return errors;
 };
+
+export const updateContact = (contact) => (dispatch, getState) => {
+    var user = getState().auth.user;
+    if( !(Object.keys(user).length === 0) )
+        user.contacts.push(contact);
+    console.log(user);
+    dispatch({
+        type: UPDATE_CONTACT,
+        payload: user
+    });
+}
 
 export const setErrors = (errors) => dispatch => {
     dispatch({

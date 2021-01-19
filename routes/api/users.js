@@ -118,21 +118,46 @@ module.exports = function(io) {
 
 
     // @route POST api/users/login
-    // @desc Add Contact to Database and Return Contact information
+    // @desc Add to a User's contacts in the Database and Return Contact information
     // @access private
-    router.post('/contacts', passport.authenticate('jwt', {session: false}), (req, res) => {
+    router.post('/contacts', passport.authenticate('jwt', {session: false}), async (req, res) => {
         const { email } = req.body;
 
-        User.findOne({ email }).then(user => { 
-            if(!user) {
-                return res.status(404).json({ usernotfound: 'User not found' });
-            } else {
-                return res.json({
-                    sucess: true,
-                    email: email
-                });
+        try {
+
+            // check if the requested contact is the current user
+            if(email === req.user.email) {
+                return res.status(400).json({ addcontacterror: 'Cannot add yourself'})
             }
-        });
+
+            // check if the requested contact exists in the database
+            const contact = await User.findOne({ email }, 'name');
+            if(!contact) return res.status(404).json({ addcontacterror: 'User not found' });
+
+            console.log('Requested Contact: ');
+            console.log(contact);
+
+            // check if the requested user isn't already a contact
+            const user = await User.findById(req.user._id, 'contacts');
+            for(let e of user.contacts) {
+                const contactStr = JSON.stringify(contact._id);
+                if(JSON.stringify(e._id) === contactStr) {
+                    console.log('matching contacts');
+                    return res.status(400).json({ addcontacterror: 'User already in contacts' });
+                }
+            };
+
+            // update User's contact list in database
+            await User.updateOne({ _id: req.user._id },{$push: {contacts: contact}})
+            .then(() => {
+                return res.json({
+                    contact: contact
+                });
+            });
+
+        } catch(err) {
+            return res.status(500).json({ servererror: 'Internal server error.' });
+        }
     });
 
     return router;

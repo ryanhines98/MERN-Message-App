@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { addContact, setErrors } from "../../actions/userActions";
+import { addContact, setErrors, updateContact } from "../../actions/userActions";
 
 import {
     Dialog,
@@ -33,12 +33,17 @@ class ContactForm extends Component {
     }
 
     handleContact = async () => {
-        const errors = await this.addContact(this.state.email);
-        if(errors){
-            this.props.setErrors(errors);
-        } else {
-            this.handleClose();
-        }
+        const res = await this.props.addContact(this.state.email);
+        // console.log(res);
+        // console.log(res.errors);
+        // if(res.errors){
+        //     console.log(res.errors);
+        //     this.props.setErrors(res.errors);
+        // } else {
+        //     console.log(res.contact);
+        //     this.props.updateContact(res.contact);
+        //     this.handleClose();
+        // }
     };
 
     handleClose = () => {
@@ -83,10 +88,10 @@ class ContactForm extends Component {
                         fullWidth
                         onChange={this.onChange}
                         value={this.state.email}
-                        error={this.state.errors.usernotfound ? true : false}
+                        error={this.state.errors.addcontacterror ? true : false}
                     />
                     <span style={{color: 'red'}}>
-                        {this.state.errors.usernotfound}
+                        {this.state.errors.addcontacterror}
                     </span>
 
                 </DialogContent>
@@ -115,5 +120,5 @@ ContactForm.propTypes = {
 
 export default connect(
     mapStateToProps,
-    { setErrors }
+    { setErrors, addContact }
 ) (ContactForm);
