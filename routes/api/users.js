@@ -87,7 +87,7 @@ module.exports = function(io) {
                     const payload = {
                         id: user.id,
                         name: user.name,
-                        contacts: user.contacts
+                        contacts: []
                     };
 
                     // sign token
@@ -117,10 +117,10 @@ module.exports = function(io) {
     });
 
 
-    // @route POST api/users/login
+    // @route POST api/users/contact
     // @desc Add to a User's contacts in the Database and Return Contact information
     // @access private
-    router.post('/contacts', passport.authenticate('jwt', {session: false}), async (req, res) => {
+    router.post('/contact', passport.authenticate('jwt', {session: false}), async (req, res) => {
         const { email } = req.body;
 
         try {
@@ -150,13 +150,24 @@ module.exports = function(io) {
             // update User's contact list in database
             await User.updateOne({ _id: req.user._id },{$push: {contacts: contact}})
             .then(() => {
-                return res.json({
-                    contact: contact
-                });
+                return res.json(contact);
             });
 
         } catch(err) {
             return res.status(500).json({ servererror: 'Internal server error.' });
+        }
+    });
+
+
+    // @route POST api/users/contacts
+    // @desc Add to a User's contacts in the Database and Return Contact information
+    // @access private
+    router.get('/contacts', passport.authenticate('jwt', {session: false}), async (req, res) => {
+        try {
+            const user = await User.findById(req.user._id, 'contacts');
+            return res.json(user.contacts);
+        } catch(err) {
+            return res.status(500).json({ servererror: 'Internal server error.'});
         }
     });
 

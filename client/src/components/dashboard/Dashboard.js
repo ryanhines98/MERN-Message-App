@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Contacts from './Contacts';
@@ -14,24 +14,36 @@ const useStyles = makeStyles((theme) => ({
         padding: 5,
         margin: 10
     },
+    test: {
+        position: 'relative',
+        top: 50,
+        left: 500
+    }
 }));
 
 function Dashboard(props) {
     const classes = useStyles();
+    const mounted = useRef();
+
+    useEffect(() => {
+        if(!mounted.current) {
+            mounted.current = true;
+        }
+    },[props.contacts]);
 
     return (
         <div className={classes.root}>
-            <Contacts/>
+            { (props.contacts.length !== 0) ? <Contacts contacts={props.contacts}/> : null }
         </div>
     );
 }
 
 Dashboard.propTypes = {
-    auth: PropTypes.object.isRequired
+    contacts: PropTypes.array
 };
 
 const mapStateToProps = state => ({
-    auth: state.auth
+    contacts: state.auth.user.contacts
 });
 
 export default connect(

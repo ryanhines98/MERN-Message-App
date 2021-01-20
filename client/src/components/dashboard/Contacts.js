@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { makeStyles } from '@material-ui/core/styles';
 import {    ListSubheader, 
             IconButton,
             Drawer,
             List,
-            Divider
+            Divider,
+            ListItem,
+            ListItemAvatar,
+            ListItemText,
+            Avatar
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 
@@ -36,9 +40,21 @@ const useStyles = makeStyles((theme) => ({
 
 function Contacts(props) {
     const classes = useStyles();
+    const mounted = useRef();
 
     const [open, setOpen] = useState(false);
-    const [contacts, setContacts] = useState([]);
+    const [contacts] = useState([]);
+
+    useEffect(() => {
+        if(!mounted.current) {
+            console.log('mounting');
+            console.log(props.contacts);
+
+            mounted.current = true;
+        } else {
+
+        }
+    }, [props.contacts]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -48,32 +64,18 @@ function Contacts(props) {
         setOpen(false);
     };
 
-    // props.contacts.forEach(e => {
-    //     contacts.push(
-    //         <ListItem button divider className={classes.item}>
-    //             <ListItemAvatar>
-    //                 <Avatar />
-    //             </ListItemAvatar>
-    //             <ListItemText 
-    //                 primary='Ryan Hines'
-    //                 secondary='ello govna'
-    //             />
-    //         </ListItem>
-    //     );
-    // });
-
-    // for(let i = 0; i < 50; i++) {
-    //     contacts.push(
-    //     <ListItem button divider className={classes.item}>
-    //         <ListItemAvatar>
-    //             <Avatar />
-    //         </ListItemAvatar>
-    //         <ListItemText 
-    //             primary='Ryan Hines'
-    //             secondary='ello govna'
-    //         />
-    //     </ListItem>);
-    // }
+    for(let i = 0; i < props.contacts.length; i++) {
+        contacts.push(
+            <ListItem button divider className={classes.item}>
+                <ListItemAvatar>
+                    <Avatar />
+                </ListItemAvatar>
+                <ListItemText 
+                    primary={props.contacts[i].name}
+                />
+            </ListItem>
+        );
+    }
 
     return(
         <Drawer
@@ -112,15 +114,17 @@ function Contacts(props) {
 }
 
 const mapStateToProps = state => ({
-    contacts: state.auth.user.contacts,
+    //contacts: state.auth.user.contacts,
     errors: state.errors
 });
 
 Contacts.propTypes = {
-    contacts: PropTypes.array.isRequired,
-    errors: PropTypes.object.isRequired
+    //contacts: PropTypes.array,
+    errors: PropTypes.object
+    //getContacts: PropTypes.func.isRequired
 }
 
 export default connect(
     mapStateToProps
+    //{ getContacts }
 ) (Contacts);

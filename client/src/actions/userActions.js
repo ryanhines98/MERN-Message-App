@@ -3,10 +3,10 @@ import { GET_ERRORS, UPDATE_CONTACT } from "./types";
 
 export const addContact = (email) => dispatch => {
     axios
-        .post('api/users/contacts', { email })
+        .post('api/users/contact', { email })
         .then(res => {
-            // console.log(res.data);
-            updateContact(res.data);
+            console.log(res.data);
+            dispatch(updateContact(res.data));
         })
         .catch(err => {
             dispatch({
@@ -16,11 +16,32 @@ export const addContact = (email) => dispatch => {
         });
 };
 
+export const getContacts = () => (dispatch, getState) => {
+    const user = getState().auth.user;
+
+    axios
+        .get('api/users/contacts')
+        .then(res => {
+            user.contacts = res.data;
+            dispatch({
+                type: UPDATE_CONTACT,
+                payload: user
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 export const updateContact = (contact) => (dispatch, getState) => {
     var user = getState().auth.user;
-    if( !(Object.keys(user).length === 0) )
+    console.log(contact);
+
+    // if contact is not empty
+    if( !(Object.keys(contact).length === 0) ) {
         user.contacts.push(contact);
-    console.log(user);
+    }
+
     dispatch({
         type: UPDATE_CONTACT,
         payload: user

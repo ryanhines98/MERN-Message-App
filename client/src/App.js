@@ -20,6 +20,8 @@ import Dashboard from "./components/dashboard/Dashboard";
 import Error from "./components/error/Error";
 import Chat from "./components/Chat";
 
+import { getContacts } from "./actions/userActions";
+
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
   // Set auth token header
@@ -31,6 +33,7 @@ if (localStorage.jwtToken) {
 
   // Set user and isAuthenticated
   store.dispatch(setCurrentUser(decoded));
+  store.dispatch(getContacts());
 
   // Check for expired token
   const currentTime = Date.now() / 1000; // to get in milliseconds
