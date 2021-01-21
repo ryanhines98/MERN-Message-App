@@ -134,9 +134,6 @@ module.exports = function(io) {
             const contact = await User.findOne({ email }, 'name');
             if(!contact) return res.status(404).json({ addcontacterror: 'User not found' });
 
-            console.log('Requested Contact: ');
-            console.log(contact);
-
             // check if the requested user isn't already a contact
             const user = await User.findById(req.user._id, 'contacts');
             for(let e of user.contacts) {

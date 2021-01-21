@@ -8,6 +8,8 @@ import {
     USER_LOADING
 } from "./types";
 
+import { getContacts } from "./userActions";
+
 // register user
 export const registerUser = (userData, history) => dispatch => {
     axios
@@ -40,6 +42,8 @@ export const loginUser = userData => dispatch => {
 
             // Set current user
             dispatch(setCurrentUser(decoded));
+            dispatch(getContacts());
+
         })
         .catch(err =>
             dispatch({

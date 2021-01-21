@@ -43,15 +43,34 @@ function Contacts(props) {
     const mounted = useRef();
 
     const [open, setOpen] = useState(false);
-    const [contacts] = useState([]);
+    const [listItems, setListItems] = useState([]);
+    const contacts = [];
 
     useEffect(() => {
+
+        for(let i = 0; i < props.contacts.length; i++) {
+            contacts.push(
+                <ListItem button divider className={classes.item}>
+                    <ListItemAvatar>
+                        <Avatar />
+                    </ListItemAvatar>
+                    <ListItemText 
+                        primary={props.contacts[i].name}
+                    />
+                </ListItem>
+            );
+        }
+
+        setListItems(contacts);
+
         if(!mounted.current) {
-            console.log('mounting');
+            console.log('mounting contacts');
             console.log(props.contacts);
 
             mounted.current = true;
         } else {
+            console.log('updating contacts');
+            console.log(props.contacts);
 
         }
     }, [props.contacts]);
@@ -64,18 +83,18 @@ function Contacts(props) {
         setOpen(false);
     };
 
-    for(let i = 0; i < props.contacts.length; i++) {
-        contacts.push(
-            <ListItem button divider className={classes.item}>
-                <ListItemAvatar>
-                    <Avatar />
-                </ListItemAvatar>
-                <ListItemText 
-                    primary={props.contacts[i].name}
-                />
-            </ListItem>
-        );
-    }
+    // for(let i = 0; i < props.contacts.length; i++) {
+    //     contacts.push(
+    //         <ListItem button divider className={classes.item}>
+    //             <ListItemAvatar>
+    //                 <Avatar />
+    //             </ListItemAvatar>
+    //             <ListItemText 
+    //                 primary={props.contacts[i].name}
+    //             />
+    //         </ListItem>
+    //     );
+    // }
 
     return(
         <Drawer
@@ -104,7 +123,7 @@ function Contacts(props) {
 
                 <Divider />
 
-                { contacts }
+                { listItems }
 
             </List>
 
@@ -114,17 +133,13 @@ function Contacts(props) {
 }
 
 const mapStateToProps = state => ({
-    //contacts: state.auth.user.contacts,
     errors: state.errors
 });
 
 Contacts.propTypes = {
-    //contacts: PropTypes.array,
     errors: PropTypes.object
-    //getContacts: PropTypes.func.isRequired
 }
 
 export default connect(
     mapStateToProps
-    //{ getContacts }
 ) (Contacts);

@@ -31,7 +31,10 @@ export default function authReducer(state = initialState, action) {
         case UPDATE_CONTACT:
             return {
                 ...state,
-                user: action.payload
+                user: {
+                    ...state.user,
+                    contacts: action.payload
+                }
             }
         default:
             return state;

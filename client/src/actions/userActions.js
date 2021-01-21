@@ -5,7 +5,6 @@ export const addContact = (email) => dispatch => {
     axios
         .post('api/users/contact', { email })
         .then(res => {
-            console.log(res.data);
             dispatch(updateContact(res.data));
         })
         .catch(err => {
@@ -17,15 +16,13 @@ export const addContact = (email) => dispatch => {
 };
 
 export const getContacts = () => (dispatch, getState) => {
-    const user = getState().auth.user;
-
     axios
         .get('api/users/contacts')
         .then(res => {
-            user.contacts = res.data;
+            const contacts = [].concat(res.data);
             dispatch({
                 type: UPDATE_CONTACT,
-                payload: user
+                payload: contacts
             })
         })
         .catch(err => {
@@ -34,17 +31,16 @@ export const getContacts = () => (dispatch, getState) => {
 };
 
 export const updateContact = (contact) => (dispatch, getState) => {
-    var user = getState().auth.user;
-    console.log(contact);
+    const contacts = [].concat(getState().auth.user.contacts);
 
     // if contact is not empty
     if( !(Object.keys(contact).length === 0) ) {
-        user.contacts.push(contact);
+        contacts.push(contact);
     }
 
     dispatch({
         type: UPDATE_CONTACT,
-        payload: user
+        payload: contacts
     });
 }
 

@@ -13,11 +13,6 @@ const useStyles = makeStyles((theme) => ({
         width: 200,
         padding: 5,
         margin: 10
-    },
-    test: {
-        position: 'relative',
-        top: 50,
-        left: 500
     }
 }));
 
@@ -26,10 +21,15 @@ function Dashboard(props) {
     const mounted = useRef();
 
     useEffect(() => {
+        console.log()
         if(!mounted.current) {
+
             mounted.current = true;
+        } else {
+            console.log('dashboard');
+            console.log(props.contacts);
         }
-    },[props.contacts]);
+    }, [props.contacts] );
 
     return (
         <div className={classes.root}>
@@ -39,7 +39,7 @@ function Dashboard(props) {
 }
 
 Dashboard.propTypes = {
-    contacts: PropTypes.array
+    contacts: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -47,5 +47,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(
-    mapStateToProps
+    mapStateToProps,
+    null
 ) (Dashboard);
