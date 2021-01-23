@@ -32,6 +32,7 @@ function ContactItem(props) {
     const [anchorEl, setAnchorEl] = useState(null);
 
     // used for delete contact option
+    const deleteId = 'delete-contact';
     const [deleteOpen, setDeleteOpen] = useState(false);
 
     const [contactOpen, setContactOpen] = useState(false);
@@ -49,7 +50,9 @@ function ContactItem(props) {
         e.stopPropagation();
         setAnchorEl(null);
         setOptionOpen(false);
-        handleDeleteForm(e);
+        if(e.target.id === deleteId) {
+            handleDeleteForm(e);
+        }
     }
 
 
@@ -107,11 +110,11 @@ function ContactItem(props) {
                 }}
             >
                 <Paper>
-                    <ClickAwayListener onClickAway={handleClose}>
+                    <ClickAwayListener onClickAway={(e) => handleClose(e)}>
                         <MenuList 
                             autoFocusItem={optionOpen} 
                         >
-                            <MenuItem onClick={handleClose}>Delete Contact</MenuItem>
+                            <MenuItem onClick={(e) => handleClose(e)} id={deleteId}>Delete Contact</MenuItem>
                         </MenuList>
                     </ClickAwayListener>
                 </Paper>
