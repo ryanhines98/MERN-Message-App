@@ -11,10 +11,11 @@ import {
     MenuList,
     MenuItem,
     ClickAwayListener,
-    Popover
+    Popover,
 } from "@material-ui/core";
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ContactDeleteForm from './ContactDeleteForm';
 
 const useStyles = makeStyles((theme) => ({
     item: {
@@ -26,23 +27,40 @@ const useStyles = makeStyles((theme) => ({
 function ContactItem(props) {
     const classes = useStyles();
 
+    // used for options menu
     const [optionOpen, setOptionOpen] = useState(false);
-    const [contactOpen, setContactOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
-    // handler for contact options
+    // used for delete contact option
+    const [deleteOpen, setDeleteOpen] = useState(false);
+
+    const [contactOpen, setContactOpen] = useState(false);
+
+    // handlers for contact options
     const contactOptions = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log('contact options');
         setAnchorEl(e.currentTarget);
         setOptionOpen(true);
     }
 
     const handleClose = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         setAnchorEl(null);
         setOptionOpen(false);
+        handleDeleteForm(e);
     }
+
+
+    // handler for delete contact form
+    const handleDeleteForm = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDeleteOpen(!deleteOpen);
+    }
+
+
 
     // handler for contact click
     const contactClick = (e) => {
@@ -98,6 +116,8 @@ function ContactItem(props) {
                     </ClickAwayListener>
                 </Paper>
             </Popover>
+
+            <ContactDeleteForm open={deleteOpen} toggleOpen={handleDeleteForm} />
 
         </ListItem>
     );
