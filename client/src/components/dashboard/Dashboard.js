@@ -21,13 +21,10 @@ function Dashboard(props) {
     const mounted = useRef();
 
     useEffect(() => {
-        console.log()
         if(!mounted.current) {
-
             mounted.current = true;
         } else {
-            console.log('dashboard');
-            console.log(props.contacts);
+            
         }
     }, [props.contacts] );
 

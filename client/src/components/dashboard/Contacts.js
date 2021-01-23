@@ -5,17 +5,14 @@ import {    ListSubheader,
             IconButton,
             Drawer,
             List,
-            Divider,
-            ListItem,
-            ListItemAvatar,
-            ListItemText,
-            Avatar
+            Divider
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import ContactForm from "./ContactForm";
+import ContactItem from "./ContactItem";
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -42,7 +39,7 @@ function Contacts(props) {
     const classes = useStyles();
     const mounted = useRef();
 
-    const [open, setOpen] = useState(false);
+    const [formOpen, setFormOpen] = useState(false);
     const [listItems, setListItems] = useState([]);
     const contacts = [];
 
@@ -50,51 +47,28 @@ function Contacts(props) {
 
         for(let i = 0; i < props.contacts.length; i++) {
             contacts.push(
-                <ListItem button divider className={classes.item}>
-                    <ListItemAvatar>
-                        <Avatar />
-                    </ListItemAvatar>
-                    <ListItemText 
-                        primary={props.contacts[i].name}
-                    />
-                </ListItem>
+                <ContactItem name={props.contacts[i].name} />
             );
         }
-
         setListItems(contacts);
 
         if(!mounted.current) {
-            console.log('mounting contacts');
-            console.log(props.contacts);
-
             mounted.current = true;
         } else {
-            console.log('updating contacts');
-            console.log(props.contacts);
 
         }
+
     }, [props.contacts]);
 
+
+    // handlers for add contact form
     const handleClickOpen = () => {
-        setOpen(true);
+        setFormOpen(true);
     };
     
     const handleClose = () => {
-        setOpen(false);
+        setFormOpen(false);
     };
-
-    // for(let i = 0; i < props.contacts.length; i++) {
-    //     contacts.push(
-    //         <ListItem button divider className={classes.item}>
-    //             <ListItemAvatar>
-    //                 <Avatar />
-    //             </ListItemAvatar>
-    //             <ListItemText 
-    //                 primary={props.contacts[i].name}
-    //             />
-    //         </ListItem>
-    //     );
-    // }
 
     return(
         <Drawer
@@ -117,7 +91,7 @@ function Contacts(props) {
                     > <AddIcon/> </IconButton>
 
                     {/* Form for adding a Contact on button Press */}
-                    <ContactForm open={open} handleClose={handleClose} />
+                    <ContactForm open={formOpen} handleClose={handleClose} />
 
                 </ListSubheader>
 
