@@ -30,6 +30,7 @@ function ContactItem(props) {
     // used for options menu
     const [optionOpen, setOptionOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const id = optionOpen ? 'simple-popover' : undefined;
 
     // used for delete contact option
     const deleteId = 'delete-contact';
@@ -61,8 +62,12 @@ function ContactItem(props) {
         e.preventDefault();
         e.stopPropagation();
         setDeleteOpen(!deleteOpen);
-    }
 
+        if(e._reactName === "onMouseUp") {
+            console.log('mouse up event');
+            return false;
+        }
+    }
 
 
     // handler for contact click
@@ -70,8 +75,6 @@ function ContactItem(props) {
         e.preventDefault();
         console.log('contact click');
     }
-
-    const id = optionOpen ? 'simple-popover' : undefined;
 
     return(
         <ListItem 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from "prop-types";
 
 import {
@@ -20,7 +20,8 @@ function ContactDeleteForm(props) {
     return(
         <Dialog
             open={props.open}
-            onClose={props.toggleOpen}
+            disableBackdropClick
+            onClick={ (e) => e.stopPropagation() }
         >
             <DialogTitle>
                 {"Delete Contact?"}
