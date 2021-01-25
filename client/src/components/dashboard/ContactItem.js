@@ -62,11 +62,6 @@ function ContactItem(props) {
         e.preventDefault();
         e.stopPropagation();
         setDeleteOpen(!deleteOpen);
-
-        if(e._reactName === "onMouseUp") {
-            console.log('mouse up event');
-            return false;
-        }
     }
 
 
@@ -88,7 +83,7 @@ function ContactItem(props) {
                 <Avatar />
             </ListItemAvatar>
             <ListItemText 
-                primary={props.name}
+                primary={props.contact.name}
             />
 
             <Button
@@ -123,7 +118,7 @@ function ContactItem(props) {
                 </Paper>
             </Popover>
 
-            <ContactDeleteForm open={deleteOpen} toggleOpen={handleDeleteForm} />
+            <ContactDeleteForm open={deleteOpen} toggleOpen={handleDeleteForm} contact={props.contact} />
 
         </ListItem>
     );

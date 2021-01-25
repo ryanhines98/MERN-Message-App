@@ -168,5 +168,21 @@ module.exports = function(io) {
         }
     });
 
+
+    // @route DELETE api/users/contact
+    // @desc Delete a contact from a user's list in database
+    // @access private
+    router.delete('/contact', passport.authenticate('jwt', {session: false}), async (req, res) => {
+        try {
+            await User.updateOne( { _id: req.user._id }, { $pullAll: { contacts: [ { _id: req.body._id, name: req.body.name } ] } } )
+                .then(() => {
+                    return res.json({ success: true }); 
+                })
+                .catch(err => console.log(err));
+        } catch(err) {
+            return res.status(500).json({ servererror: 'Internal server error.'});
+        }
+    });
+
     return router;
 }

@@ -47,7 +47,7 @@ function Contacts(props) {
 
         for(let i = 0; i < props.contacts.length; i++) {
             contacts.push(
-                <ContactItem name={props.contacts[i].name} />
+                <ContactItem contact={props.contacts[i]} />
             );
         }
         setListItems(contacts);

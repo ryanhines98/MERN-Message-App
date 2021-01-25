@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import {
     Dialog,
@@ -9,11 +10,14 @@ import {
     DialogActions,
     Button,
 } from "@material-ui/core";
+import { deleteContact } from "../../actions/userActions";
 
 function ContactDeleteForm(props) {
 
     const handleDelete = (e) => {
         console.log('contact delete');
+        console.log(props.contact.name);
+        props.deleteContact(props.contact);
         props.toggleOpen(e);
     }
 
@@ -48,7 +52,12 @@ function ContactDeleteForm(props) {
 
 ContactDeleteForm.propTypes = {
     open: PropTypes.bool.isRequired,
-    toggleOpen: PropTypes.func.isRequired
+    toggleOpen: PropTypes.func.isRequired,
+    contact: PropTypes.object.isRequired,
+    deleteContact: PropTypes.func
 }
 
-export default ContactDeleteForm;
+export default connect(
+    null,
+    { deleteContact }
+) (ContactDeleteForm);

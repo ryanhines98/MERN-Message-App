@@ -15,7 +15,7 @@ export const addContact = (email) => dispatch => {
         });
 };
 
-export const getContacts = () => (dispatch, getState) => {
+export const getContacts = () => (dispatch) => {
     axios
         .get('api/users/contacts')
         .then(res => {
@@ -42,6 +42,29 @@ export const updateContact = (contact) => (dispatch, getState) => {
         type: UPDATE_CONTACT,
         payload: contacts
     });
+}
+
+export const deleteContact = (contact) => (dispatch, getState) => {
+
+    const contacts = [].concat(getState().auth.user.contacts);
+
+    if( !(Object.keys(contact).length === 0) ) {
+        for(let i =0; i < contacts.length; i++) {
+            if( contacts[i] === contact ) contacts.splice(i, 1);
+        }
+    }
+
+    axios
+        .delete('api/users/contact', { data: contact } )
+        .then(res => {
+            dispatch({
+                type: UPDATE_CONTACT,
+                payload: contacts
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
 }
 
 export const setErrors = (errors) => dispatch => {
