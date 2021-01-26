@@ -37,7 +37,7 @@ function Dashboard(props) {
 
     return (
         <div className={classes.root}>
-            { (props.contacts.length !== 0) ? <Contacts contacts={props.contacts} changeContact={changeContact} /> : null }
+            <Contacts contacts={props.contacts} changeContact={changeContact} />
             <Chat contact={contact} />
         </div>
     );

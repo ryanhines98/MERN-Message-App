@@ -45,12 +45,14 @@ function Contacts(props) {
 
     useEffect(() => {
 
-        for(let i = 0; i < props.contacts.length; i++) {
-            contacts.push(
-                <ContactItem contact={props.contacts[i]} changeContact={props.changeContact} />
-            );
+        if(props.contacts.length !== 0) {
+            for(let i = 0; i < props.contacts.length; i++) {
+                contacts.push(
+                    <ContactItem contact={props.contacts[i]} changeContact={props.changeContact} />
+                );
+            }
+            setListItems(contacts);
         }
-        setListItems(contacts);
 
         if(!mounted.current) {
             mounted.current = true;
