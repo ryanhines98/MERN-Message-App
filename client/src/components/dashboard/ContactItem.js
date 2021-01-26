@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from "prop-types";
 
 import {    
     Button,
@@ -69,6 +70,7 @@ function ContactItem(props) {
     const contactClick = (e) => {
         e.preventDefault();
         console.log('contact click');
+        props.changeContact(props.contact)
     }
 
     return(
@@ -122,6 +124,11 @@ function ContactItem(props) {
 
         </ListItem>
     );
+}
+
+ContactItem.propTypes = {
+    contact: PropTypes.object.isRequired,
+    changeContact: PropTypes.func
 }
 
 export default ContactItem;

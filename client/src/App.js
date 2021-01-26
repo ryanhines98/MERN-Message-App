@@ -18,7 +18,7 @@ import Login from "./components/auth/Login";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 import Error from "./components/error/Error";
-import Chat from "./components/Chat";
+import Chat from "./components/dashboard/Chat";
 
 import { getContacts } from "./actions/userActions";
 

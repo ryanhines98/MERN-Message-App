@@ -47,7 +47,7 @@ function Contacts(props) {
 
         for(let i = 0; i < props.contacts.length; i++) {
             contacts.push(
-                <ContactItem contact={props.contacts[i]} />
+                <ContactItem contact={props.contacts[i]} changeContact={props.changeContact} />
             );
         }
         setListItems(contacts);
@@ -111,7 +111,9 @@ const mapStateToProps = state => ({
 });
 
 Contacts.propTypes = {
-    errors: PropTypes.object
+    errors: PropTypes.object,
+    contacts: PropTypes.array,
+    changeContact: PropTypes.func
 }
 
 export default connect(
