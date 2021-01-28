@@ -26,24 +26,23 @@ var clients = new Map();
 app.io.on("connection", (socket) => {
     console.log(socket.id + " connected");
 
+
     socket.on('storeClientInfo', (data) => {
         if(!clients.has(data.userid)) {
             clients.set(data.userid, socket.id)
-
-            console.log('Clients: ');
-            console.log(clients);
         } else {
             socket.disconnect();
         }
     });
 
-    socket.on('message', (data) => {
-        socket.broadcast.emit('message', data);
+
+    socket.on('message', (userid, msg) => {
+        socket.to(clients.get(userid)).emit('message', msg);
     });
+
 
     socket.on("disconnect", () => {
         console.log(socket.id + " disconnected");
-
         for(let [key, value] of clients) {
             if(value === socket.id) {
                 clients.delete(key);

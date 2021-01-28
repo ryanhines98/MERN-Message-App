@@ -16,10 +16,6 @@ export function addEvents(socket) {
     socket.on('connect', function(data){
         const state = store.getState();
         socket.emit('storeClientInfo', { userid:  state.auth.user.id });
-        console.log('Socket Connected!');
-    });
-
-    socket.on('message', function(data) {
-        console.log(data);
+        // console.log('Socket Connected!');
     });
 };

@@ -37,8 +37,6 @@ function ContactItem(props) {
     const deleteId = 'delete-contact';
     const [deleteOpen, setDeleteOpen] = useState(false);
 
-    const [contactOpen, setContactOpen] = useState(false);
-
     // handlers for contact options
     const contactOptions = (e) => {
         e.preventDefault();

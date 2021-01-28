@@ -6,7 +6,6 @@ import {
 
 export const connectSocket = () => (dispatch, getState) => {
     if(getState().auth.isAuthenticated) {
-
         dispatch({
             type: ESTABLISH_SOCKET,
             payload: createSocket()
@@ -15,7 +14,12 @@ export const connectSocket = () => (dispatch, getState) => {
 }
 
 export const disconnectSocket = () => (dispatch, getState) => {
-    getState().chat.socket.disconnect();
+    const socket = getState().chat.socket;
+
+    if( !(Object.keys(socket).length === 0) ) {
+        getState().chat.socket.disconnect();
+    }
+
     dispatch({
         type: DESTABLISH_SOCKET
     })

@@ -1,50 +1,46 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Contacts from './Contacts';
 import Chat from './Chat';
-import { makeStyles } from '@material-ui/core/styles';
+import { connectSocket, disconnectSocket } from "../../actions/chatActions";
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        
-    },
-    paper: {
-        height: '100%',
-        width: 200,
-        padding: 5,
-        margin: 10
-    }
-}));
+ class Dashboard extends Component {
 
-function Dashboard(props) {
-    const classes = useStyles();
-    const mounted = useRef();
-
-    const [contact, setContact] = useState({});
-
-    const changeContact = (name) => {
-        setContact(name);
+    constructor(props) {
+        super(props);
+        this.state = {
+            contact: {}
+        };
     }
 
-    useEffect(() => {
-        if(!mounted.current) {
-            mounted.current = true;
-        } else {
-            
-        }
-    }, [props.contacts] );
+    changeContact = (selectContact) => {
+        this.setState({ contact: selectContact });
+    }
 
-    return (
-        <div className={classes.root}>
-            <Contacts contacts={props.contacts} changeContact={changeContact} />
-            <Chat contact={contact} />
-        </div>
-    );
+    componentDidMount() {
+        this.props.connectSocket();
+    }
+
+    componentWillUnmount() {
+        this.props.disconnectSocket();
+    }
+
+    render() {
+        return (
+            <div style={{ height: '100%' }}>
+                <Contacts contacts={this.props.contacts} changeContact={this.changeContact} />
+                { !(Object.keys(this.state.contact).length === 0) ? <Chat contact={this.state.contact} /> : null }
+            </div>
+        );
+    }
+
 }
 
 Dashboard.propTypes = {
-    contacts: PropTypes.array.isRequired
+    contacts: PropTypes.array.isRequired,
+    connectSocket: PropTypes.func.isRequired,
+    disconnectSocket: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -53,5 +49,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    null
+    { connectSocket, disconnectSocket }
 ) (Dashboard);

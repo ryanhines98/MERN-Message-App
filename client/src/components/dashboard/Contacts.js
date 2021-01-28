@@ -9,7 +9,6 @@ import {    ListSubheader,
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import ContactForm from "./ContactForm";
 import ContactItem from "./ContactItem";
@@ -48,7 +47,7 @@ function Contacts(props) {
         if(props.contacts.length !== 0) {
             for(let i = 0; i < props.contacts.length; i++) {
                 contacts.push(
-                    <ContactItem contact={props.contacts[i]} changeContact={props.changeContact} />
+                    <ContactItem contact={props.contacts[i]} changeContact={props.changeContact} key={i} />
                 );
             }
             setListItems(contacts);
@@ -108,16 +107,10 @@ function Contacts(props) {
 
 }
 
-const mapStateToProps = state => ({
-    errors: state.errors
-});
 
 Contacts.propTypes = {
-    errors: PropTypes.object,
     contacts: PropTypes.array,
     changeContact: PropTypes.func
 }
 
-export default connect(
-    mapStateToProps
-) (Contacts);
+export default Contacts;

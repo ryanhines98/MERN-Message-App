@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { connectSocket, disconnectSocket } from "../../actions/chatActions";
 
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -17,19 +16,25 @@ import {
 
 const useStyles = makeStyles((theme) => ({
     toolbar: theme.mixins.toolbar,
+    box: {
+        display: 'flex',
+        flexFlow: 'column',
+        height: '100%'
+    },
     root: {
         margin: 10,
-        height: '88vh',
-        position: 'relative'
+        position: 'relative',
+        flex: '1 1 auto',
+        display: 'flex',
+        flexFlow: 'column'
     },
     chatHeader: {
         backgroundColor: theme.palette.primary.main,
-        padding: 15
+        padding: 15,
     },
     container: {
-        position: 'absolute',
-        bottom: 0,
-        
+        // position: 'absolute',
+        // bottom: 0,
         display: 'flex',
         width: '100%'
     },
@@ -48,8 +53,13 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 10,
         width: '100%'
     },
-    button: {
-        
+    chat: {
+        margin: 10,
+        flex: '1 1 auto'
+        //height: '100%'
+    },
+    message: {
+        margin: 20
     }
 }));
 
@@ -57,22 +67,39 @@ function Chat(props) {
     const mounted = useRef();
     const classes = useStyles();
 
+    const [message, setMessage] = useState('');
+    const [messageItems, setMessageItems] = useState([]);
+
     useEffect(() => {
         if(!mounted.current) {
-            //props.connectSocket();
+
+            props.socket.on('message', function(data) {
+                console.log(data);
+            });
+
             mounted.current = true;
         } else {
 
         }
         
-        return () => {
-            //props.disconnectSocket();
-        }
-    }, []);
+    }, [messageItems]);
 
+    const onChange = (e) => {
+        setMessage(e.target.value);
+    }
+
+    const onSubmit = (e) => {
+        if(e.type === "click" || e.key === "Enter") {
+            let arr = [...messageItems];
+            arr.push(message);
+            setMessageItems(arr);
+            setMessage('');
+            props.socket.emit('message', props.contact._id, message);
+        }
+    }
 
     return(
-        <Container maxWidth="md">
+        <Container maxWidth="md" className={classes.box}>
             <div className={classes.toolbar} />
             <Paper 
                 className={classes.root}
@@ -82,20 +109,47 @@ function Chat(props) {
                     <Typography style={{color:'white'}}> {props.contact.name} </Typography>
                 </div>
 
-                <form className={classes.container} >
+                <Paper
+                    className={classes.chat}
+                    variant='outlined'
+                >
+                    {
+                        messageItems.map( (item, index) => 
+                            <div key={index + 1} className={classes.message}>
+                                <Paper 
+                                    variant='outlined' 
+                                    component='span'
+                                    style={{ 
+                                        padding: 5
+                                    }}
+                                >
+                                    {item}
+                                </Paper>
+                            </div>
+                        )
+                    }
+                </Paper>
+
+                <div className={classes.container}>
                     <Paper className={classes.input}>
                         <InputBase 
                             placeholder='Enter Message...'
                             className={classes.textfield}
+                            value={message}
+                            onChange={onChange}
+                            onKeyPress={onSubmit}
                         />
 
                         <Divider orientation='vertical' className={classes.divider} />
 
-                        <IconButton color='primary' className={classes.button} >
+                        <IconButton 
+                            color='primary'
+                            onClick={onSubmit}
+                        >
                             <ArrowRightRoundedIcon />
                         </IconButton>
                     </Paper>
-                </form>
+                </div>
             </Paper>
         </Container>
     );
@@ -106,12 +160,10 @@ const mapStateToProps = state => ({
 });
 
 Chat.propTypes = {
-    connectSocket: PropTypes.func.isRequired,
-    disconnectSocket: PropTypes.func.isRequired,
-    socket: PropTypes.object
+    socket: PropTypes.object.isRequired,
+    contact: PropTypes.object.isRequired
 }
 
 export default connect(
-    mapStateToProps,
-    { connectSocket, disconnectSocket }
+    mapStateToProps
 ) (Chat);
