@@ -16,7 +16,12 @@ import {
 
 const useStyles = makeStyles((theme) => ({
     toolbar: theme.mixins.toolbar,
+
     box: {
+        height: '100%',
+        display: 'flex'
+    },
+    container: {
         display: 'flex',
         flexFlow: 'column',
         height: '100%'
@@ -32,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.primary.main,
         padding: 15,
     },
-    container: {
+    inputContainer: {
         display: 'flex',
         width: '100%'
     },
@@ -55,7 +60,9 @@ const useStyles = makeStyles((theme) => ({
         margin: 10,
         flex: '1 1 auto',
         display: 'flex',
-        flexFlow: 'column'
+        flexFlow: 'column',
+        overflowY: 'scroll',
+        height: 10
     },
     msgContainer: {
         margin: 5
@@ -67,6 +74,14 @@ const useStyles = makeStyles((theme) => ({
     msgFrom: {
         width: '50%',
         float: 'left'
+    },
+    message: {
+        padding: 5,
+        float: 'inherit',
+        backgroundColor: theme.palette.primary.main
+    },
+    msgContent: {
+        color: theme.palette.background.paper
     }
 }));
 
@@ -75,24 +90,25 @@ function Chat(props) {
     const classes = useStyles();
 
     const [message, setMessage] = useState('');
-    const [messageItems, _setMessageItems] = useState([]);
-    const msgRef = useRef(messageItems);
+    const [messages, _setMessages] = useState([]);
+
+    const msgsRef = useRef(messages);
+    const msgBttm = useRef(null);
 
     useEffect(() => {
         if(!mounted.current) {
-
             props.socket.on('message', function(msg) {
-                console.log('received message');
-                addMessageItem(msg);
-                console.log(msgRef);
+                addMessage(msg);
             });
-
             mounted.current = true;
         } else {
-
+            scrollToBottom();
         }
-        
-    }, [messageItems] );
+    }, [messages] );
+
+    const scrollToBottom = () => {
+        msgBttm.current.scrollIntoView({ behavior: 'smooth' });
+    }
 
     const onChange = (e) => {
         setMessage(e.target.value);
@@ -100,86 +116,84 @@ function Chat(props) {
 
     const onSubmit = (e) => {
         if(e.type === "click" || e.key === "Enter") {
-
             const msg = {
                 id: props.userid,
                 content: message
             }
-
-            addMessageItem(msg);
+            addMessage(msg);
             setMessage('');
             props.socket.emit('message', props.contact._id, msg);
         }
     }
 
-    const setMessageItems = (arr) => {
-        msgRef.current = arr;
-        _setMessageItems(arr);
+    const setMessages = (arr) => {
+        msgsRef.current = arr;
+        _setMessages(arr);
     }
 
-    const addMessageItem = (msg) => {
-        let arr = [...msgRef.current];
-        arr.push(msg);
-        setMessageItems(arr);
+    const addMessage = (msg) => {
+        let arr = [...msgsRef.current, msg];
+        setMessages(arr);
     }
 
     return(
-        <Container maxWidth="md" className={classes.box}>
-            <div className={classes.toolbar} />
-            <Paper 
-                className={classes.root}
-                variant='outlined'
-            >
-                <div className={classes.chatHeader}>
-                    <Typography style={{color:'white'}}> {props.contact.name} </Typography>
-                </div>
-
-                <Paper
-                    className={classes.chat}
+        <div className={classes.box}>
+            <div style={{ height: '100%', width: 100}} />
+            <Container maxWidth="sm" className={classes.container}>
+                <div className={classes.toolbar} />
+                <Paper 
+                    className={classes.root}
                     variant='outlined'
                 >
-                    {
-                        messageItems.map( (msg, index) => 
-                            <div key={index + 1} className={classes.msgContainer}>  
-                                <div className={ (props.userid === msg.id) ? classes.msgTo : classes.msgFrom }>
-                                    <Paper 
-                                        variant='outlined'
-                                        component='span'
-                                        style={{ 
-                                            padding: 5,
-                                            float: 'inherit'
-                                        }}
-                                    >
-                                        <Typography style={{ wordWrap: 'break-word' }}>{msg.content}</Typography>
-                                    </Paper>
+                    <div className={classes.chatHeader}>
+                        <Typography style={{color:'white'}}> {props.contact.name} </Typography>
+                    </div>
+
+                    <Paper
+                        className={classes.chat}
+                        variant='outlined'
+                    >
+                        { 
+                            messages.map( (msg, index) => 
+                                <div key={index} className={classes.msgContainer}>  
+                                    <div className={ (props.userid === msg.id) ? classes.msgTo : classes.msgFrom }>
+                                        <Paper 
+                                            elevation={3}
+                                            component='span'
+                                            className={classes.message}
+                                        >
+                                            <Typography className={classes.msgContent}>{msg.content}</Typography>
+                                        </Paper>
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    }
-                </Paper>
-
-                <div className={classes.container}>
-                    <Paper className={classes.input}>
-                        <InputBase 
-                            placeholder='Enter Message...'
-                            className={classes.textfield}
-                            value={message}
-                            onChange={onChange}
-                            onKeyPress={onSubmit}
-                        />
-
-                        <Divider orientation='vertical' className={classes.divider} />
-
-                        <IconButton 
-                            color='primary'
-                            onClick={onSubmit}
-                        >
-                            <ArrowRightRoundedIcon />
-                        </IconButton>
+                            ) 
+                        }
+                        <div ref={msgBttm} />
                     </Paper>
-                </div>
-            </Paper>
-        </Container>
+
+                    <div className={classes.inputContainer}>
+                        <Paper className={classes.input}>
+                            <InputBase 
+                                placeholder='Enter Message...'
+                                className={classes.textfield}
+                                value={message}
+                                onChange={onChange}
+                                onKeyPress={onSubmit}
+                            />
+
+                            <Divider orientation='vertical' className={classes.divider} />
+
+                            <IconButton 
+                                color='primary'
+                                onClick={onSubmit}
+                            >
+                                <ArrowRightRoundedIcon />
+                            </IconButton>
+                        </Paper>
+                    </div>
+                </Paper>
+            </Container>
+        </div>
     );
 } 
 

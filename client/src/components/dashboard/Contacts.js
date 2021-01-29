@@ -75,6 +75,7 @@ function Contacts(props) {
         <Drawer
             className={classes.drawer}
             variant='permanent'
+            id='contacts'
         >
             <div className={classes.toolbar} />
 

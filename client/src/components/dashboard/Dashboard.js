@@ -20,6 +20,8 @@ import { connectSocket, disconnectSocket } from "../../actions/chatActions";
 
     componentDidMount() {
         this.props.connectSocket();
+        const contacts = document.getElementById('contacts');
+        console.log(contacts.clientWidth);
     }
 
     componentWillUnmount() {
