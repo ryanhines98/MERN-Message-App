@@ -67,8 +67,7 @@ function ContactItem(props) {
     // handler for contact click
     const contactClick = (e) => {
         e.preventDefault();
-        console.log('contact click');
-        props.changeContact(props.contact)
+        props.changeContact(props.contact);
     }
 
     return(

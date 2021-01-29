@@ -33,8 +33,6 @@ const useStyles = makeStyles((theme) => ({
         padding: 15,
     },
     container: {
-        // position: 'absolute',
-        // bottom: 0,
         display: 'flex',
         width: '100%'
     },
@@ -55,11 +53,20 @@ const useStyles = makeStyles((theme) => ({
     },
     chat: {
         margin: 10,
-        flex: '1 1 auto'
-        //height: '100%'
+        flex: '1 1 auto',
+        display: 'flex',
+        flexFlow: 'column'
     },
-    message: {
-        margin: 20
+    msgContainer: {
+        margin: 5
+    },
+    msgTo: {
+        width: '50%',
+        float: 'right'
+    },
+    msgFrom: {
+        width: '50%',
+        float: 'left'
     }
 }));
 
@@ -68,13 +75,16 @@ function Chat(props) {
     const classes = useStyles();
 
     const [message, setMessage] = useState('');
-    const [messageItems, setMessageItems] = useState([]);
+    const [messageItems, _setMessageItems] = useState([]);
+    const msgRef = useRef(messageItems);
 
     useEffect(() => {
         if(!mounted.current) {
 
-            props.socket.on('message', function(data) {
-                console.log(data);
+            props.socket.on('message', function(msg) {
+                console.log('received message');
+                addMessageItem(msg);
+                console.log(msgRef);
             });
 
             mounted.current = true;
@@ -82,7 +92,7 @@ function Chat(props) {
 
         }
         
-    }, [messageItems]);
+    }, [messageItems] );
 
     const onChange = (e) => {
         setMessage(e.target.value);
@@ -90,12 +100,27 @@ function Chat(props) {
 
     const onSubmit = (e) => {
         if(e.type === "click" || e.key === "Enter") {
-            let arr = [...messageItems];
-            arr.push(message);
-            setMessageItems(arr);
+
+            const msg = {
+                id: props.userid,
+                content: message
+            }
+
+            addMessageItem(msg);
             setMessage('');
-            props.socket.emit('message', props.contact._id, message);
+            props.socket.emit('message', props.contact._id, msg);
         }
+    }
+
+    const setMessageItems = (arr) => {
+        msgRef.current = arr;
+        _setMessageItems(arr);
+    }
+
+    const addMessageItem = (msg) => {
+        let arr = [...msgRef.current];
+        arr.push(msg);
+        setMessageItems(arr);
     }
 
     return(
@@ -114,17 +139,20 @@ function Chat(props) {
                     variant='outlined'
                 >
                     {
-                        messageItems.map( (item, index) => 
-                            <div key={index + 1} className={classes.message}>
-                                <Paper 
-                                    variant='outlined' 
-                                    component='span'
-                                    style={{ 
-                                        padding: 5
-                                    }}
-                                >
-                                    {item}
-                                </Paper>
+                        messageItems.map( (msg, index) => 
+                            <div key={index + 1} className={classes.msgContainer}>  
+                                <div className={ (props.userid === msg.id) ? classes.msgTo : classes.msgFrom }>
+                                    <Paper 
+                                        variant='outlined'
+                                        component='span'
+                                        style={{ 
+                                            padding: 5,
+                                            float: 'inherit'
+                                        }}
+                                    >
+                                        <Typography style={{ wordWrap: 'break-word' }}>{msg.content}</Typography>
+                                    </Paper>
+                                </div>
                             </div>
                         )
                     }
@@ -156,7 +184,8 @@ function Chat(props) {
 } 
 
 const mapStateToProps = state => ({
-    socket: state.chat.socket
+    socket: state.chat.socket,
+    userid: state.auth.user.id
 });
 
 Chat.propTypes = {
