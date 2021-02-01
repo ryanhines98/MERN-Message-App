@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from "prop-types";
 
 import {    
@@ -18,15 +17,7 @@ import {
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ContactDeleteForm from './ContactDeleteForm';
 
-const useStyles = makeStyles((theme) => ({
-    item: {
-        width: '18rem'
-    }
-}));
-
-
 function ContactItem(props) {
-    const classes = useStyles();
 
     // used for options menu
     const [optionOpen, setOptionOpen] = useState(false);
@@ -76,13 +67,13 @@ function ContactItem(props) {
             disableRipple={true}
             onClick={e => contactClick(e)}
             divider 
-            className={classes.item}
         >
             <ListItemAvatar>
                 <Avatar />
             </ListItemAvatar>
             <ListItemText 
                 primary={props.contact.name}
+                style={{ marginRight: 15 }}
             />
 
             <Button
@@ -108,9 +99,7 @@ function ContactItem(props) {
             >
                 <Paper>
                     <ClickAwayListener onClickAway={(e) => handleClose(e)}>
-                        <MenuList 
-                            autoFocusItem={optionOpen} 
-                        >
+                        <MenuList autoFocusItem={optionOpen}>
                             <MenuItem onClick={(e) => handleClose(e)} id={deleteId}>Delete Contact</MenuItem>
                         </MenuList>
                     </ClickAwayListener>

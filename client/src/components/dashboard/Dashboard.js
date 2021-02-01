@@ -20,8 +20,6 @@ import { connectSocket, disconnectSocket } from "../../actions/chatActions";
 
     componentDidMount() {
         this.props.connectSocket();
-        const contacts = document.getElementById('contacts');
-        console.log(contacts.clientWidth);
     }
 
     componentWillUnmount() {
@@ -30,7 +28,7 @@ import { connectSocket, disconnectSocket } from "../../actions/chatActions";
 
     render() {
         return (
-            <div style={{ height: '100%' }}>
+            <div style={{ height: '100%', position: 'relative' }}>
                 <Contacts contacts={this.props.contacts} changeContact={this.changeContact} />
                 { !(Object.keys(this.state.contact).length === 0) ? <Chat contact={this.state.contact} /> : null }
             </div>

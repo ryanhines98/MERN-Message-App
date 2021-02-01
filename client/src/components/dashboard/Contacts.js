@@ -15,50 +15,38 @@ import ContactItem from "./ContactItem";
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
-        width: '100%'
+        width: 500
     },
     toolbar: theme.mixins.toolbar,
     list: {
         backgroundColor: theme.palette.background.paper
     },
-    item: {
-        width: '18rem'
-    },
     subheader: {
         display: 'flex',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        marginBottom: 5
     },
     title: {
         display: 'inline',
-        fontSize: '1.5rem'
+        fontSize: '1.5rem',
+        marginRight: 10
     }
 }));
 
 function Contacts(props) {
     const classes = useStyles();
     const mounted = useRef();
+    const contacts = useRef();
 
     const [formOpen, setFormOpen] = useState(false);
-    const [listItems, setListItems] = useState([]);
-    const contacts = [];
 
     useEffect(() => {
-
-        if(props.contacts.length !== 0) {
-            for(let i = 0; i < props.contacts.length; i++) {
-                contacts.push(
-                    <ContactItem contact={props.contacts[i]} changeContact={props.changeContact} key={i} />
-                );
-            }
-            setListItems(contacts);
-        }
-
         if(!mounted.current) {
+            console.log(contacts.current.clientWidth);
             mounted.current = true;
         } else {
 
         }
-
     }, [props.contacts]);
 
 
@@ -76,6 +64,7 @@ function Contacts(props) {
             className={classes.drawer}
             variant='permanent'
             id='contacts'
+            ref={contacts}
         >
             <div className={classes.toolbar} />
 
@@ -99,10 +88,9 @@ function Contacts(props) {
 
                 <Divider />
 
-                { listItems }
+                { props.contacts.map((contact, index) => <ContactItem contact={contact} changeContact={props.changeContact} key={index} />) }
 
             </List>
-
         </Drawer>
     );
 

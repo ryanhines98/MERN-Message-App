@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
 
     box: {
         height: '100%',
-        display: 'flex'
+        display: 'flex',
+        zIndex: theme.zIndex.drawer
     },
     container: {
         display: 'flex',
@@ -138,7 +139,7 @@ function Chat(props) {
 
     return(
         <div className={classes.box}>
-            <div style={{ height: '100%', width: 100}} />
+            {/* <div style={{ height: '100%', width: 200}} /> */}
             <Container maxWidth="sm" className={classes.container}>
                 <div className={classes.toolbar} />
                 <Paper 
