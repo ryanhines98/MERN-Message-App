@@ -14,6 +14,9 @@ function apply(app) {
     app.use(passport.initialize());
     //passport config function
     require("./passport")(passport);
+
+    // cors middleware
+    app.use(require('cors')());
 }
 
 module.exports = { apply };

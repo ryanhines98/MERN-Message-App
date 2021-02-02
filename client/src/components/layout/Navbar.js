@@ -6,7 +6,9 @@ import CodeIcon from '@material-ui/icons/Code';
 import { makeStyles } from '@material-ui/core/styles';
 import { 
         Typography,
-        Button
+        Button,
+        IconButton,
+        Avatar
     } from '@material-ui/core';
 
 import { connect } from "react-redux";
@@ -26,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Navbar(props) {
+
     const onLogoutClick = e => {
         e.preventDefault();
         props.logoutUser();
@@ -39,15 +42,25 @@ function Navbar(props) {
                 <Typography variant='h6' className={classes.title} >
                     MERN Message Application
                 </Typography>
-                { props.isAuthenticated && <Button variant='contained' onClick={onLogoutClick}>Logout</Button> }
+                { props.isAuthenticated && 
+                    <div>
+                        <Button variant='contained' onClick={onLogoutClick}>Logout</Button>
+                        <IconButton
+                            style={{ marginLeft: 10 }}
+                            href='/account'
+                        > 
+                            <Avatar/> 
+                        </IconButton> 
+                    </div>
+                }
             </Toolbar>
         </Appbar>
-
     );
 }
 
 Navbar.propTypes = {
-    isAuthenticated: PropTypes.bool.isRequired
+    isAuthenticated: PropTypes.bool.isRequired,
+    logoutUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

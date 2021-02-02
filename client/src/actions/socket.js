@@ -4,6 +4,7 @@ import store from '../store';
 const SERVER_URL = 'http://localhost:5000'; 
 
 export function createSocket() {
+    console.log(window.location.host);
     var socket = io(
         SERVER_URL,
         { secure: true }
