@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
+import { setCurrentContact } from "./actions/chatActions";
 
 // redux
 import { Provider } from "react-redux";
@@ -43,6 +44,11 @@ if (localStorage.jwtToken) {
     // Redirect to login 
     window.location.href = "./login";
   }
+}
+
+if(sessionStorage.contact) {
+  const contact = JSON.parse(sessionStorage.contact);
+  store.dispatch(setCurrentContact(contact));
 }
 
 class App extends Component {

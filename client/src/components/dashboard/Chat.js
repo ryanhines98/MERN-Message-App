@@ -107,6 +107,15 @@ function Chat(props) {
         }
     }, [messages] );
 
+    useEffect(() => {
+        if(mounted.current) {
+            console.log('contact change');
+            setMessages([]);
+        }
+    }, [props.contact]);
+
+
+
     const scrollToBottom = () => {
         msgBttm.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -147,7 +156,7 @@ function Chat(props) {
                     variant='outlined'
                 >
                     <div className={classes.chatHeader}>
-                        <Typography style={{color:'white'}}> {props.contact.name} </Typography>
+                        <Typography style={{color:'white'}}> { props.contact.name } </Typography>
                     </div>
 
                     <Paper
@@ -200,7 +209,8 @@ function Chat(props) {
 
 const mapStateToProps = state => ({
     socket: state.chat.socket,
-    userid: state.auth.user.id
+    userid: state.auth.user.id,
+    contact: state.chat.currentContact
 });
 
 Chat.propTypes = {

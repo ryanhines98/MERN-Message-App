@@ -35,7 +35,7 @@ export default function authReducer(state = initialState, action) {
                     ...state.user,
                     contacts: action.payload
                 }
-            }
+            };
         default:
             return state;
     }

@@ -1,7 +1,8 @@
 import { createSocket }  from "./socket";
 import { 
     ESTABLISH_SOCKET,
-    DESTABLISH_SOCKET
+    DESTABLISH_SOCKET,
+    SET_CURRENT_CONTACT
 } from './types';
 
 export const connectSocket = () => (dispatch, getState) => {
@@ -9,7 +10,7 @@ export const connectSocket = () => (dispatch, getState) => {
         dispatch({
             type: ESTABLISH_SOCKET,
             payload: createSocket()
-        })
+        });
     } 
 }
 
@@ -22,5 +23,14 @@ export const disconnectSocket = () => (dispatch, getState) => {
 
     dispatch({
         type: DESTABLISH_SOCKET
-    })
+    });
+}
+
+export const setCurrentContact = (contact) => (dispatch) => {
+    sessionStorage.setItem('contact', JSON.stringify(contact));
+
+    dispatch({
+        type: SET_CURRENT_CONTACT,
+        payload: contact
+    });
 }

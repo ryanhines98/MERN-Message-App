@@ -42,7 +42,7 @@ function Contacts(props) {
 
     useEffect(() => {
         if(!mounted.current) {
-            console.log(contacts.current.clientWidth);
+            
             mounted.current = true;
         } else {
 

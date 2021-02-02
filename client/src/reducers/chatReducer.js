@@ -1,7 +1,12 @@
-import { ESTABLISH_SOCKET, DESTABLISH_SOCKET } from '../actions/types';
+import { 
+    ESTABLISH_SOCKET, 
+    DESTABLISH_SOCKET,
+    SET_CURRENT_CONTACT
+} from '../actions/types';
 
 const initialState = {
-    socket: {}
+    socket: {},
+    currentContact: {}
 };
 
 export default function chatReducer(state = initialState, action) {
@@ -15,7 +20,12 @@ export default function chatReducer(state = initialState, action) {
             return {
                 ...state,
                 socket: {}
-            }
+            };
+        case SET_CURRENT_CONTACT:
+            return {
+                ...state,
+                currentContact: action.payload
+            };
         default:
             return state;
     }
