@@ -185,5 +185,20 @@ module.exports = function(io) {
         }
     });
 
+    // @route DELETE api/users/account
+    // @desc Delete User Account from Database
+    // @access private
+    router.delete('/account', passport.authenticate('jwt', {session: false}), async (req, res) => {
+        try {
+            await User.findByIdAndDelete(req.user._id)
+                .then(() => {
+                    return res.json({ success: true });
+                })
+                .catch(err => console.log(err));
+        } catch(err) {
+            return res.status(500).json({ servererror: 'Internal server error.'});
+        }
+    });
+
     return router;
 }

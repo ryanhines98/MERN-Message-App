@@ -16,6 +16,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { deleteAccount } from "../../actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -37,6 +38,7 @@ function Account(props) {
 
     const handleDelete = () => {
         console.log('handle delete');
+        props.deleteAccount();
     }
 
     return(
@@ -112,4 +114,8 @@ const mapStateToProps = state => ({
     user: state.auth.user
 });
 
-export default connect(mapStateToProps)(Account);
+export default 
+connect(
+    mapStateToProps,
+    { deleteAccount }
+)(Account);

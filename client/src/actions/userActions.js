@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GET_ERRORS, UPDATE_CONTACT } from "./types";
+import { logoutUser } from "./authActions";
 
 export const addContact = (email) => dispatch => {
     axios
@@ -56,7 +57,7 @@ export const deleteContact = (contact) => (dispatch, getState) => {
 
     axios
         .delete('api/users/contact', { data: contact } )
-        .then(res => {
+        .then(() => {
             dispatch({
                 type: UPDATE_CONTACT,
                 payload: contacts
@@ -73,3 +74,15 @@ export const setErrors = (errors) => dispatch => {
         payload: errors
     });
 };
+
+export const deleteAccount = () => dispatch => {
+    axios
+        .delete('api/users/account')
+        .then(res => {
+            console.log(res);
+            dispatch(logoutUser());
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
