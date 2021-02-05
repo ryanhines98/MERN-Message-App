@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 
-import Appbar from '@material-ui/core/Appbar';
-import Toolbar from '@material-ui/core/Toolbar';
-import CodeIcon from '@material-ui/icons/Code';
 import { makeStyles } from '@material-ui/core/styles';
-import { 
-        Typography,
-        Button,
-        IconButton,
-        Avatar
-    } from '@material-ui/core';
-
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
 import { logoutUser } from "../../actions/authActions";
+
+import { 
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    IconButton,
+    Avatar
+} from '@material-ui/core';
+import CodeIcon from '@material-ui/icons/Code';
+//import Appbar from '@material-ui/core/Appbar';
+// import { AppBar } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     bar: {
@@ -31,15 +32,15 @@ const useStyles = makeStyles((theme) => ({
 
 function Navbar(props) {
 
-    const [dashboard, setDashboard] = useState(false);
+    //const [dashboard, setDashboard] = useState(false);
 
     useEffect(() => {
-        console.log(window.location.pathname);
-        if (window.location.pathname === '/dashboard')
-            setDashboard(true);
-        else {
-            setDashboard(false);
-        }
+        // console.log(window.location.pathname);
+        // if (window.location.pathname === '/dashboard')
+        //     setDashboard(true);
+        // else {
+        //     setDashboard(false);
+        // }
     });
 
     const onLogoutClick = e => {
@@ -49,7 +50,7 @@ function Navbar(props) {
 
     const classes = useStyles();
     return (
-        <Appbar position='absolute' color='primary' className={classes.bar}>
+        <AppBar position='absolute' color='primary' className={classes.bar}>
             <Toolbar>
                 <div style={{ 
                     display: 'flex', 
@@ -57,11 +58,11 @@ function Navbar(props) {
                     width: '100%'
                 }}>
                     
-                    {  dashboard &&
+                    {/* {  dashboard &&
                         <div>
                             <Typography> test </Typography>
                         </div>
-                    }
+                    } */}
 
                     <div style={{ display: 'flex', flexDirection: 'row'}}>
                         <div className={classes.item}>
@@ -88,7 +89,7 @@ function Navbar(props) {
                     }
                 </div>
             </Toolbar>
-        </Appbar>
+        </AppBar>
     );
 }
 
