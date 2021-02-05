@@ -4,6 +4,18 @@ import { connect } from "react-redux";
 import Contacts from './Contacts';
 import Chat from './Chat';
 import { connectSocket, disconnectSocket, setCurrentContact } from "../../actions/chatActions";
+import { Button } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+
+const styles = (theme) => {
+    return({
+        toolbar: theme.mixins.toolbar,
+        button: {
+            position: 'absolute',
+            zIndex: theme.zIndex.drawer+1
+        }
+    });
+}
 
  class Dashboard extends Component {
 
@@ -30,8 +42,13 @@ import { connectSocket, disconnectSocket, setCurrentContact } from "../../action
     }
 
     render() {
+        const {classes} = this.props;
         return (
             <div style={{ height: '100%', position: 'relative' }}>
+                <div style={{ position: 'absolute' }}>
+                    <div className={classes.toolbar} />
+                    <Button className={classes.button}>temp</Button>
+                </div>
                 <Contacts contacts={this.props.contacts} changeContact={this.changeContact} />
                 { !(Object.keys(this.state.contact).length === 0) ? <Chat /> : null }
             </div>
@@ -61,4 +78,4 @@ export default connect(
         disconnectSocket,
         setCurrentContact
      }
-) (Dashboard);
+) (withStyles(styles)(Dashboard));

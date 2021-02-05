@@ -1,5 +1,6 @@
 const db = require("./config/db");
 const middleware = require("./config/middleware");
+const path = require('path');
 
 // routes
 const users = require("./routes/api/users");
@@ -54,3 +55,13 @@ app.io.on("connection", (socket) => {
 
 // apply routes
 app.use( "/api/users", users(app.io) );
+
+// serve static assets while in production
+if(process.env.NODE_ENV === 'production') {
+    // static folder
+    app.use(express.static('client/build'));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    });
+}

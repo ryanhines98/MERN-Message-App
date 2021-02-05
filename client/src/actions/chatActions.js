@@ -28,7 +28,6 @@ export const disconnectSocket = () => (dispatch, getState) => {
 
 export const setCurrentContact = (contact) => (dispatch) => {
     sessionStorage.setItem('contact', JSON.stringify(contact));
-
     dispatch({
         type: SET_CURRENT_CONTACT,
         payload: contact

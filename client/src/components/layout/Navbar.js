@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Appbar from '@material-ui/core/Appbar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,8 +19,10 @@ const useStyles = makeStyles((theme) => ({
     bar: {
         zIndex: theme.zIndex.drawer + 1
     },
-    title: {
-        flex: 1,
+    item: {
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column'
     },
     icon: {
         marginRight: theme.spacing(2)
@@ -28,6 +30,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Navbar(props) {
+
+    const [dashboard, setDashboard] = useState(false);
+
+    useEffect(() => {
+        console.log(window.location.pathname);
+        if (window.location.pathname === '/dashboard')
+            setDashboard(true);
+        else {
+            setDashboard(false);
+        }
+    });
 
     const onLogoutClick = e => {
         e.preventDefault();
@@ -38,30 +51,46 @@ function Navbar(props) {
     return (
         <Appbar position='absolute' color='primary' className={classes.bar}>
             <Toolbar>
-                <CodeIcon fontSize='large' className={classes.icon}/>
-                <Typography variant='h6' className={classes.title} >
-                    MERN Message Application
-                </Typography>
-                { props.isAuthenticated && 
-                    <div>
-                        <Button variant='contained' onClick={onLogoutClick}>Logout</Button>
-                        <IconButton
-                            style={{ marginLeft: 10 }}
-                            href='/account'
-                        > 
-                            <Avatar/> 
-                        </IconButton> 
+                <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    width: '100%'
+                }}>
+                    
+                    {  dashboard &&
+                        <div>
+                            <Typography> test </Typography>
+                        </div>
+                    }
+
+                    <div style={{ display: 'flex', flexDirection: 'row'}}>
+                        <div className={classes.item}>
+                            <CodeIcon fontSize='large' className={classes.icon}/>
+                        </div>
+                        <div className={classes.item}>
+                            <Typography variant='h5'>
+                                
+                                MERN Message Application
+                            </Typography>
+                        </div>
                     </div>
-                }
+
+                    { props.isAuthenticated && 
+                        <div>
+                            <Button variant='contained' onClick={onLogoutClick}>Logout</Button>
+                            <IconButton
+                                style={{ marginLeft: 10 }}
+                                href='/account'
+                            > 
+                                <Avatar/> 
+                            </IconButton> 
+                        </div>
+                    }
+                </div>
             </Toolbar>
         </Appbar>
     );
 }
-
-Navbar.propTypes = {
-    isAuthenticated: PropTypes.bool.isRequired,
-    logoutUser: PropTypes.func.isRequired
-};
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated
