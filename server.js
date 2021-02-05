@@ -1,6 +1,7 @@
 const db = require("./config/db");
 const middleware = require("./config/middleware");
 const path = require('path');
+const express = require('express');
 
 // routes
 const users = require("./routes/api/users");
