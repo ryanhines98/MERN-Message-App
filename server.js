@@ -7,12 +7,12 @@ const express = require('express');
 const users = require("./routes/api/users");
 
 const app = require("express")();
-const port = process.env.PORT || 5000;
+const port = require("./config/keys").serverPort;
 const server = app.listen(port, () => console.log(`Server up and running on port ${port}!`) );
-const serverAddr = require("./config/keys").serverAddr;
+const clientAddr = require("./config/keys").clientAddr;
 app.io = require("socket.io")(server, {
     cors: {
-        origin: serverAddr,
+        origin: window.location.origin,
         methods: ["GET", "POST"]
     }
 });

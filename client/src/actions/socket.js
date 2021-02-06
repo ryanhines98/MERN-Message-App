@@ -5,7 +5,7 @@ const SERVER_URL = 'http://localhost:5000';
 
 export function createSocket() {
     var socket = io(
-        SERVER_URL,
+        window.location.origin,
         { secure: true }
     );
     addEvents(socket);
