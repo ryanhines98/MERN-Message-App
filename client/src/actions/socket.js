@@ -2,6 +2,7 @@ import { io } from 'socket.io-client';
 import store from '../store';
 
 const SERVER_URL = 'http://localhost:5000'; 
+//const SERVER = require('../config/config');
 
 export function createSocket() {
     var socket = io(

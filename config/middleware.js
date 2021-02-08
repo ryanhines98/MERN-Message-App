@@ -1,5 +1,6 @@
 const bodyParser = require("body-parser");
 const passport = require("passport");
+const cors = require("cors");
 
 function apply(app) {
     // apply bodyParser middleware
@@ -14,9 +15,11 @@ function apply(app) {
     app.use(passport.initialize());
     //passport config function
     require("./passport")(passport);
-
-    // cors middleware
-    app.use(require('cors')());
+    
+    if(process.env.CORS) {
+        // cors middleware
+        app.use(cors());
+    }
 }
 
 module.exports = { apply };

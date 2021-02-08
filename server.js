@@ -7,13 +7,13 @@ const express = require('express');
 const users = require("./routes/api/users");
 
 const app = require("express")();
-const port = require("./config/keys").serverPort;
+const port = process.env.PORT || 5000;
 const server = app.listen(port, () => console.log(`Server up and running on port ${port}!`) );
-const clientAddr = require("./config/keys").clientAddr;
+const clientAddr = ( (process.env.NODE_ENV === 'production') ? 'https://polar-lake-08328.herokuapp.com/' : 'http://localhost:3000');
 app.io = require("socket.io")(server, {
     cors: {
-        origin: window.location.origin,
-        methods: ["GET", "POST"]
+       origin: clientAddr,
+       methods: ["GET", "POST"]
     }
 });
 
