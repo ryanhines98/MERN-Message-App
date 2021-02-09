@@ -45,10 +45,6 @@ const styles = (theme) => {
         const {classes} = this.props;
         return (
             <div style={{ height: '100%', position: 'relative' }}>
-                {/* <div style={{ position: 'absolute' }}>
-                    <div className={classes.toolbar} />
-                    <Button className={classes.button}>temp</Button>
-                </div> */}
                 <Contacts contacts={this.props.contacts} changeContact={this.changeContact} />
                 { !(Object.keys(this.state.contact).length === 0) ? <Chat /> : null }
             </div>

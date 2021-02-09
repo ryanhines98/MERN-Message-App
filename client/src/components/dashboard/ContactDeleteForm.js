@@ -15,8 +15,6 @@ import { deleteContact } from "../../actions/userActions";
 function ContactDeleteForm(props) {
 
     const handleDelete = (e) => {
-        console.log('contact delete');
-        console.log(props.contact.name);
         props.deleteContact(props.contact);
         props.toggleOpen(e);
     }

@@ -6,7 +6,7 @@ import {    ListSubheader,
             Drawer,
             List,
             Divider
-} from '@material-ui/core'
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import PropTypes from "prop-types";
@@ -93,7 +93,6 @@ function Contacts(props) {
             </List>
         </Drawer>
     );
-
 }
 
 

@@ -11,6 +11,7 @@ const validateLoginInput = require("../../validation/login");
 
 // Load User model
 const User = require("../../models/User");
+const Conversation = require("../../models/Conversation");
 
 module.exports = function(io) { 
 
@@ -126,7 +127,7 @@ module.exports = function(io) {
 
         try {
 
-            // check if the requested contact is the current user
+            // check if the requested contact isn't the current user
             if(email === req.user.email) {
                 return res.status(400).json({ addcontacterror: 'Cannot add yourself'})
             }
@@ -145,11 +146,29 @@ module.exports = function(io) {
                 }
             };
 
-            // update User's contact list in database
-            await User.updateOne({ _id: req.user._id },{$push: {contacts: contact}})
-            .then(() => {
-                return res.json(contact);
+            // add conversation between two contacts to database as well
+            const newConvo = new Conversation({
+                members: [
+                    req.user._id,
+                    contact._id
+                ]
             });
+
+            const convo = await newConvo
+                .save()
+                .then((res) => {
+                    return res;
+                })
+                .catch(err => console.log(err));
+            
+            const newContact = {
+                ...contact._doc,
+                conversation: convo._id
+            }
+
+            // update User's contact list in database
+            await User.updateOne({ _id: req.user._id },{$push: {contacts: newContact}})
+                .then(() => res.json(newContact));
 
         } catch(err) {
             return res.status(500).json({ servererror: 'Internal server error.' });
@@ -175,9 +194,13 @@ module.exports = function(io) {
     // @access private
     router.delete('/contact', passport.authenticate('jwt', {session: false}), async (req, res) => {
         try {
-            await User.updateOne( { _id: req.user._id }, { $pullAll: { contacts: [ { _id: req.body._id, name: req.body.name } ] } } )
+            // delete contact from user's contacts array
+            await User.updateOne( { _id: req.user._id }, { $pullAll: { contacts: [ { _id: req.body._id, name: req.body.name, conversation: req.body.conversation } ] } } )
                 .then(() => {
-                    return res.json({ success: true }); 
+
+                    // delete conversation between contacts
+                    Conversation.findByIdAndDelete(req.body.conversation)
+                        .then(() => res.json({ success: true }));
                 })
                 .catch(err => console.log(err));
         } catch(err) {

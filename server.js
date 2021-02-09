@@ -2,6 +2,7 @@ const db = require("./config/db");
 const middleware = require("./config/middleware");
 const path = require('path');
 const express = require('express');
+const submitMessage = require('./utils/messaging').submitMessage;
 
 // routes
 const users = require("./routes/api/users");
@@ -39,8 +40,9 @@ app.io.on("connection", (socket) => {
     });
 
 
-    socket.on('message', (userid, msg) => {
-        socket.to(clients.get(userid)).emit('message', msg);
+    socket.on('message', (receiverid, msg) => {
+        submitMessage(msg);
+        socket.to(clients.get(receiverid)).emit('message', msg);
     });
 
 

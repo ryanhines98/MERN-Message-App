@@ -29,6 +29,11 @@ const UserSchema = new Schema({
             name: {
                 type: String,
                 required: true
+            },
+            conversation: {
+                type: Schema.Types.ObjectId,
+                ref: 'conversations',
+                required: true
             }
         }],
         default: []

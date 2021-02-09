@@ -109,7 +109,6 @@ function Chat(props) {
 
     useEffect(() => {
         if(mounted.current) {
-            console.log('contact change');
             setMessages([]);
         }
     }, [props.contact]);
@@ -148,7 +147,6 @@ function Chat(props) {
 
     return(
         <div className={classes.box}>
-            {/* <div style={{ height: '100%', width: 200}} /> */}
             <Container maxWidth="sm" className={classes.container}>
                 <div className={classes.toolbar} />
                 <Paper 
