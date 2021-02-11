@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import {    
     Button,
@@ -58,7 +59,10 @@ function ContactItem(props) {
     // handler for contact click
     const contactClick = (e) => {
         e.preventDefault();
-        props.changeContact(props.contact);
+        if(props.selectedContact._id !== props.contact._id) {
+            console.log('different contact');
+            props.changeContact(props.contact);
+        }
     }
 
     return(
@@ -114,7 +118,14 @@ function ContactItem(props) {
 
 ContactItem.propTypes = {
     contact: PropTypes.object.isRequired,
-    changeContact: PropTypes.func
+    changeContact: PropTypes.func,
+    selectedContact: PropTypes.object
 }
 
-export default ContactItem;
+const mapStateToProps = state => ({
+    selectedContact: state.chat.currentContact
+});
+
+export default connect(
+    mapStateToProps
+)(ContactItem);

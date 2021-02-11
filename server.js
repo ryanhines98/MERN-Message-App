@@ -23,7 +23,6 @@ app.io = require("socket.io")(server, {
 middleware.apply(app);
 db.connectDB();
 
-
 // map to keep track of users connected by socket
 var clients = new Map();
 
@@ -39,12 +38,10 @@ app.io.on("connection", (socket) => {
         }
     });
 
-
     socket.on('message', (receiverid, msg) => {
         submitMessage(msg);
         socket.to(clients.get(receiverid)).emit('message', msg);
     });
-
 
     socket.on("disconnect", () => {
         console.log(socket.id + " disconnected");

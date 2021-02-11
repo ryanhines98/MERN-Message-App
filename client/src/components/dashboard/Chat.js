@@ -98,6 +98,11 @@ function Chat(props) {
 
     useEffect(() => {
         if(!mounted.current) {
+            
+            if(props.messages) {
+                console.log(props.messages);
+            }
+
             props.socket.on('message', function(msg) {
                 addMessage(msg);
             });
@@ -126,9 +131,10 @@ function Chat(props) {
     const onSubmit = (e) => {
         if(e.type === "click" || e.key === "Enter") {
             const msg = {
-                id: props.userid,
-                content: message
-            }
+                conversation: props.contact.conversation,
+                sender: props.userid,
+                text: message
+            };
             addMessage(msg);
             setMessage('');
             props.socket.emit('message', props.contact._id, msg);
@@ -164,13 +170,13 @@ function Chat(props) {
                         { 
                             messages.map( (msg, index) => 
                                 <div key={index} className={classes.msgContainer}>  
-                                    <div className={ (props.userid === msg.id) ? classes.msgTo : classes.msgFrom }>
+                                    <div className={ (props.userid === msg.sender) ? classes.msgTo : classes.msgFrom }>
                                         <Paper 
                                             elevation={3}
                                             component='span'
                                             className={classes.message}
                                         >
-                                            <Typography className={classes.msgContent}>{msg.content}</Typography>
+                                            <Typography className={classes.msgContent}>{msg.text}</Typography>
                                         </Paper>
                                     </div>
                                 </div>
@@ -213,7 +219,8 @@ const mapStateToProps = state => ({
 
 Chat.propTypes = {
     socket: PropTypes.object.isRequired,
-    contact: PropTypes.object.isRequired
+    contact: PropTypes.object.isRequired,
+    messages: PropTypes.array
 }
 
 export default connect(

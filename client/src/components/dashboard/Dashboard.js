@@ -29,6 +29,7 @@ const styles = (theme) => {
     changeContact = (selectContact) => {
         this.props.setCurrentContact(selectContact);
         this.setState({ contact: selectContact });
+        sessionStorage.setItem('contact', JSON.stringify(selectContact));
     }
 
     componentDidMount() {

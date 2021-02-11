@@ -12,6 +12,7 @@ const validateLoginInput = require("../../validation/login");
 // Load User model
 const User = require("../../models/User");
 const Conversation = require("../../models/Conversation");
+const Message = require("../../models/Message");
 
 module.exports = function(io) { 
 
@@ -208,6 +209,7 @@ module.exports = function(io) {
         }
     });
 
+
     // @route DELETE api/users/account
     // @desc Delete User Account from Database
     // @access private
@@ -218,6 +220,26 @@ module.exports = function(io) {
                     return res.json({ success: true });
                 })
                 .catch(err => console.log(err));
+        } catch(err) {
+            return res.status(500).json({ servererror: 'Internal server error.'});
+        }
+    });
+
+
+    // @route GET api/users/messages
+    // @desc Get messages based on conversation from Database
+    // @access private
+    router.get('/messages', passport.authenticate('jwt', {session: false}), async (req, res) => {
+        try {
+            console.log(req.query.convo_id);
+            
+            await Message.find({ conversation: req.query.convo_id })
+                .then((query) => {
+                    console.log(query);
+                    res.json({ ...query });
+                })
+                .catch((err) => console.log(err));
+            
         } catch(err) {
             return res.status(500).json({ servererror: 'Internal server error.'});
         }
