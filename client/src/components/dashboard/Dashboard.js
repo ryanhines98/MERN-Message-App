@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import Contacts from './Contacts';
 import Chat from './Chat';
 import { connectSocket, disconnectSocket, setCurrentContact } from "../../actions/chatActions";
-import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => {
@@ -43,7 +42,7 @@ const styles = (theme) => {
     }
 
     render() {
-        const {classes} = this.props;
+        //const {classes} = this.props;
         return (
             <div style={{ height: '100%', position: 'relative' }}>
                 <Contacts contacts={this.props.contacts} changeContact={this.changeContact} />

@@ -29,14 +29,8 @@ export const disconnectSocket = () => (dispatch, getState) => {
 }
 
 export const setCurrentContact = (contact) => (dispatch) => {
-
     if( !(Object.keys(contact).length === 0) ) {
         dispatch(getMessages(contact.conversation));
-    } else {
-        dispatch({
-            type: SET_MESSAGES,
-            payload: {}
-        });
     }
 
     dispatch({

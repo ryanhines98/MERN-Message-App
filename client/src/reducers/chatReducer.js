@@ -7,8 +7,7 @@ import {
 
 const initialState = {
     socket: {},
-    currentContact: {},
-    messages: {}
+    currentContact: {}
 };
 
 export default function chatReducer(state = initialState, action) {

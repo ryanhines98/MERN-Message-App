@@ -120,6 +120,11 @@ module.exports = function(io) {
     });
 
 
+
+
+
+
+
     // @route POST api/users/contact
     // @desc Add to a User's contacts in the Database and Return Contact information
     // @access private
@@ -127,6 +132,8 @@ module.exports = function(io) {
         const { email } = req.body;
 
         try {
+
+            
 
             // check if the requested contact isn't the current user
             if(email === req.user.email) {
@@ -147,20 +154,39 @@ module.exports = function(io) {
                 }
             };
 
-            // add conversation between two contacts to database as well
-            const newConvo = new Conversation({
-                members: [
-                    req.user._id,
-                    contact._id
-                ]
-            });
+            // see if conversation with two user exists
+            var convo = null;
 
-            const convo = await newConvo
-                .save()
+            convo = await Conversation
+                .findOne({ members: [
+                    contact._id,
+                    req.user._id
+                ] })
                 .then((res) => {
                     return res;
                 })
                 .catch(err => console.log(err));
+            
+            // if no current conversation, then add a new one to database
+            if(!convo) {
+                const newConvo = new Conversation({
+                    members: [
+                        req.user._id,
+                        contact._id
+                    ]
+                });
+
+                convo = await newConvo
+                    .save()
+                    .then((res) => {
+                        return res;
+                    })
+                    .catch(err => console.log(err));
+
+                console.log('new contact created');
+            }
+
+            console.log(convo);
             
             const newContact = {
                 ...contact._doc,
@@ -199,6 +225,8 @@ module.exports = function(io) {
             await User.updateOne( { _id: req.user._id }, { $pullAll: { contacts: [ { _id: req.body._id, name: req.body.name, conversation: req.body.conversation } ] } } )
                 .then(() => {
 
+                    // delete all messages based on conversation id
+
                     // delete conversation between contacts
                     Conversation.findByIdAndDelete(req.body.conversation)
                         .then(() => res.json({ success: true }));
@@ -208,6 +236,11 @@ module.exports = function(io) {
             return res.status(500).json({ servererror: 'Internal server error.'});
         }
     });
+
+
+
+
+
 
 
     // @route DELETE api/users/account
@@ -226,17 +259,21 @@ module.exports = function(io) {
     });
 
 
+
+
+
+
     // @route GET api/users/messages
     // @desc Get messages based on conversation from Database
     // @access private
     router.get('/messages', passport.authenticate('jwt', {session: false}), async (req, res) => {
         try {
-            console.log(req.query.convo_id);
-            
-            await Message.find({ conversation: req.query.convo_id })
+            await Message
+                .find({ conversation: req.query.convo_id })
+                .sort({ timestamp: -1 })
+                .limit(10)
                 .then((query) => {
-                    console.log(query);
-                    res.json({ ...query });
+                    res.json(query);
                 })
                 .catch((err) => console.log(err));
             

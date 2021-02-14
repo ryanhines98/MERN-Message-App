@@ -96,13 +96,9 @@ function Chat(props) {
     const msgsRef = useRef(messages);
     const msgBttm = useRef(null);
 
+
     useEffect(() => {
         if(!mounted.current) {
-            
-            if(props.messages) {
-                console.log(props.messages);
-            }
-
             props.socket.on('message', function(msg) {
                 addMessage(msg);
             });
@@ -112,12 +108,14 @@ function Chat(props) {
         }
     }, [messages] );
 
+
     useEffect(() => {
-        if(mounted.current) {
-            setMessages([]);
-        }
+        if(mounted.current) setMessages([]); 
     }, [props.contact]);
 
+    useEffect(() => {
+        if(props.messages) setMessages(props.messages.reverse());
+    }, [props.messages]);
 
 
     const scrollToBottom = () => {
@@ -214,7 +212,8 @@ function Chat(props) {
 const mapStateToProps = state => ({
     socket: state.chat.socket,
     userid: state.auth.user.id,
-    contact: state.chat.currentContact
+    contact: state.chat.currentContact,
+    messages: state.chat.messages
 });
 
 Chat.propTypes = {

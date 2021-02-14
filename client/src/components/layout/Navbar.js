@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from "react-redux";
@@ -13,8 +13,6 @@ import {
     Avatar
 } from '@material-ui/core';
 import CodeIcon from '@material-ui/icons/Code';
-//import Appbar from '@material-ui/core/Appbar';
-// import { AppBar } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     bar: {
