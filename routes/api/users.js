@@ -133,7 +133,7 @@ module.exports = function(io) {
 
         try {
 
-            
+            // ------ CONTACT VERIFICATION CHECKS ------ //
 
             // check if the requested contact isn't the current user
             if(email === req.user.email) {
@@ -148,20 +148,19 @@ module.exports = function(io) {
             const user = await User.findById(req.user._id, 'contacts');
             for(let e of user.contacts) {
                 const contactStr = JSON.stringify(contact._id);
-                if(JSON.stringify(e._id) === contactStr) {
-                    console.log('matching contacts');
-                    return res.status(400).json({ addcontacterror: 'User already in contacts' });
-                }
+                if(JSON.stringify(e._id) === contactStr) return res.status(400).json({ addcontacterror: 'User already in contacts' });
             };
+
+
+
+            // ------ CONVERSATION CREATION BETWEEN CONTACTS ------ //
 
             // see if conversation with two user exists
             var convo = null;
+            const members = [ contact._id, req.user._id ].sort();
 
             convo = await Conversation
-                .findOne({ members: [
-                    contact._id,
-                    req.user._id
-                ] })
+                .findOne({ members: members })
                 .then((res) => {
                     return res;
                 })
@@ -170,10 +169,7 @@ module.exports = function(io) {
             // if no current conversation, then add a new one to database
             if(!convo) {
                 const newConvo = new Conversation({
-                    members: [
-                        req.user._id,
-                        contact._id
-                    ]
+                    members: members
                 });
 
                 convo = await newConvo
@@ -182,11 +178,7 @@ module.exports = function(io) {
                         return res;
                     })
                     .catch(err => console.log(err));
-
-                console.log('new contact created');
             }
-
-            console.log(convo);
             
             const newContact = {
                 ...contact._doc,
@@ -203,8 +195,8 @@ module.exports = function(io) {
     });
 
 
-    // @route POST api/users/contacts
-    // @desc Add to a User's contacts in the Database and Return Contact information
+    // @route GET api/users/contacts
+    // @desc Get a user's contacts
     // @access private
     router.get('/contacts', passport.authenticate('jwt', {session: false}), async (req, res) => {
         try {
@@ -223,15 +215,24 @@ module.exports = function(io) {
         try {
             // delete contact from user's contacts array
             await User.updateOne( { _id: req.user._id }, { $pullAll: { contacts: [ { _id: req.body._id, name: req.body.name, conversation: req.body.conversation } ] } } )
-                .then(() => {
+                .then(async () => {
+                    // check if requested contact has current user as a contact
+                    const query = await User.findById(req.body._id, 'contacts');
+                    for(let e of query.contacts) {
+                        if(JSON.stringify(e._id) === JSON.stringify(req.user._id)) {
+                            return res.json({ success: true});
+                        }
+                    }
 
                     // delete all messages based on conversation id
+                    Message.deleteMany({ conversation: req.body.conversation });
 
                     // delete conversation between contacts
                     Conversation.findByIdAndDelete(req.body.conversation)
                         .then(() => res.json({ success: true }));
                 })
                 .catch(err => console.log(err));
+
         } catch(err) {
             return res.status(500).json({ servererror: 'Internal server error.'});
         }
