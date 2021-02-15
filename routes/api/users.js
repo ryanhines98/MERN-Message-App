@@ -220,14 +220,17 @@ module.exports = function(io) {
                     const query = await User.findById(req.body._id, 'contacts');
                     for(let e of query.contacts) {
                         if(JSON.stringify(e._id) === JSON.stringify(req.user._id)) {
+                            // if so then return
                             return res.json({ success: true});
                         }
                     }
 
-                    // delete all messages based on conversation id
-                    Message.deleteMany({ conversation: req.body.conversation });
+                    //console.log(typeof req.body.conversation);
 
-                    // delete conversation between contacts
+                    // if not, then delete messages history and conversation
+                    Message.deleteMany({ conversation: req.body.conversation })
+                        .then((res) => console.log(res));
+
                     Conversation.findByIdAndDelete(req.body.conversation)
                         .then(() => res.json({ success: true }));
                 })

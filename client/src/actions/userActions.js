@@ -1,6 +1,7 @@
 import axios from "axios";
 import { GET_ERRORS, UPDATE_CONTACT } from "./types";
 import { logoutUser } from "./authActions";
+import { setCurrentContact } from "./chatActions";
 
 export const addContact = (email) => dispatch => {
     axios
@@ -53,6 +54,10 @@ export const deleteContact = (contact) => (dispatch, getState) => {
         for(let i =0; i < contacts.length; i++) {
             if( contacts[i] === contact ) contacts.splice(i, 1);
         }
+    }
+
+    if( getState().chat.currentContact._id === contact._id ) {
+        dispatch(setCurrentContact({}));
     }
 
     axios

@@ -46,7 +46,7 @@ const styles = (theme) => {
         return (
             <div style={{ height: '100%', position: 'relative' }}>
                 <Contacts contacts={this.props.contacts} changeContact={this.changeContact} />
-                { !(Object.keys(this.state.contact).length === 0) ? <Chat /> : null }
+                <Chat />
             </div>
         );
     }

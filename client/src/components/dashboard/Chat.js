@@ -99,15 +99,11 @@ function Chat(props) {
 
     useEffect(() => {
         if(!mounted.current) {
-            props.socket.on('message', function(msg) {
-                addMessage(msg);
-            });
             mounted.current = true;
         } else {
             scrollToBottom();
         }
-    }, [messages] );
-
+    }, [messages]);
 
     useEffect(() => {
         if(mounted.current) setMessages([]); 
@@ -117,7 +113,17 @@ function Chat(props) {
         if(props.messages) setMessages(props.messages.reverse());
     }, [props.messages]);
 
+    useEffect(() => {
+        if( Object.keys(props.socket).length !== 0 ) {
+            props.socket.on('message', function(msg) {
+                addMessage(msg);
+            });
+        }
+    }, [props.socket]);
 
+
+
+    
     const scrollToBottom = () => {
         msgBttm.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -127,7 +133,7 @@ function Chat(props) {
     }
 
     const onSubmit = (e) => {
-        if(e.type === "click" || e.key === "Enter") {
+        if( props.contact._id && (e.type === "click" || e.key === "Enter") ) {
             const msg = {
                 conversation: props.contact.conversation,
                 sender: props.userid,

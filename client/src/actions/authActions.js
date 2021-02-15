@@ -5,7 +5,8 @@ import jwt_decode from "jwt-decode";
 import {
     GET_ERRORS,
     SET_CURRENT_USER,
-    USER_LOADING
+    USER_LOADING,
+    SET_MESSAGES
 } from "./types";
 
 import { getContacts } from "./userActions";
@@ -82,4 +83,10 @@ export const logoutUser = () => dispatch => {
     // set currentContact to empty
     sessionStorage.removeItem('contact');
     dispatch(setCurrentContact({}));
+
+    // Clear Messages
+    dispatch({
+        type: SET_MESSAGES,
+        payload: null
+    });
 };
