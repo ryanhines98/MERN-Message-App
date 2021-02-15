@@ -228,8 +228,7 @@ module.exports = function(io) {
                     //console.log(typeof req.body.conversation);
 
                     // if not, then delete messages history and conversation
-                    Message.deleteMany({ conversation: req.body.conversation })
-                        .then((res) => console.log(res));
+                    Message.deleteMany({ conversation: req.body.conversation });
 
                     Conversation.findByIdAndDelete(req.body.conversation)
                         .then(() => res.json({ success: true }));

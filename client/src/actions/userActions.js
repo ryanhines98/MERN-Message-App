@@ -58,6 +58,7 @@ export const deleteContact = (contact) => (dispatch, getState) => {
 
     if( getState().chat.currentContact._id === contact._id ) {
         dispatch(setCurrentContact({}));
+        sessionStorage.removeItem('contact');
     }
 
     axios

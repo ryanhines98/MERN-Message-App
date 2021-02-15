@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
     chatHeader: {
         backgroundColor: theme.palette.primary.main,
         padding: 15,
+        height: 25
     },
     inputContainer: {
         display: 'flex',
@@ -123,7 +124,7 @@ function Chat(props) {
 
 
 
-    
+
     const scrollToBottom = () => {
         msgBttm.current.scrollIntoView({ behavior: 'smooth' });
     }
