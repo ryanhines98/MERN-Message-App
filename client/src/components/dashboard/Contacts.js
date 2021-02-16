@@ -10,8 +10,11 @@ import {    ListSubheader,
 import AddIcon from '@material-ui/icons/Add';
 
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import ContactForm from "./ContactForm";
 import ContactItem from "./ContactItem";
+
+import { getContacts } from "../../actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -36,16 +39,16 @@ const useStyles = makeStyles((theme) => ({
 function Contacts(props) {
     const classes = useStyles();
     const mounted = useRef();
-    const contacts = useRef();
+    const contactDrawer = useRef();
 
     const [formOpen, setFormOpen] = useState(false);
 
     useEffect(() => {
         if(!mounted.current) {
-            
+            props.getContacts();
             mounted.current = true;
         } else {
-
+            //console.log(props.contacts);
         }
     }, [props.contacts]);
 
@@ -64,7 +67,7 @@ function Contacts(props) {
             className={classes.drawer}
             variant='permanent'
             id='contacts'
-            ref={contacts}
+            ref={contactDrawer}
         >
             <div className={classes.toolbar} />
 
@@ -88,7 +91,7 @@ function Contacts(props) {
 
                 <Divider />
 
-                { props.contacts.map((contact, index) => <ContactItem contact={contact} changeContact={props.changeContact} key={index} />) }
+                { props.contacts.map((contact, index) => <ContactItem contact={contact} key={index} />) }
 
             </List>
         </Drawer>
@@ -97,8 +100,14 @@ function Contacts(props) {
 
 
 Contacts.propTypes = {
-    contacts: PropTypes.array,
-    changeContact: PropTypes.func
-}
+    contacts: PropTypes.array
+};
 
-export default Contacts;
+const mapStateToProps = state => ({
+    contacts: state.auth.user.contacts
+});
+
+export default connect(
+    mapStateToProps,
+    { getContacts }
+)(Contacts);

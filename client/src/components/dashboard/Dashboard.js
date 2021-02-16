@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Contacts from './Contacts';
 import Chat from './Chat';
-import { connectSocket, disconnectSocket, setCurrentContact } from "../../actions/chatActions";
+import { connectSocket, disconnectSocket } from "../../actions/chatActions";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => {
@@ -17,19 +17,6 @@ const styles = (theme) => {
 }
 
  class Dashboard extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            contact: {}
-        }
-    }
-
-    changeContact = (selectContact) => {
-        this.props.setCurrentContact(selectContact);
-        this.setState({ contact: selectContact });
-        sessionStorage.setItem('contact', JSON.stringify(selectContact));
-    }
 
     componentDidMount() {
         this.props.connectSocket();
@@ -45,33 +32,25 @@ const styles = (theme) => {
         //const {classes} = this.props;
         return (
             <div style={{ height: '100%', position: 'relative' }}>
-                <Contacts contacts={this.props.contacts} changeContact={this.changeContact} />
+                <Contacts />
                 <Chat />
             </div>
         );
     }
-
 }
 
 Dashboard.propTypes = {
-    contacts: PropTypes.array.isRequired,
     connectSocket: PropTypes.func.isRequired,
     disconnectSocket: PropTypes.func.isRequired,
-    setCurrentContact: PropTypes.func.isRequired,
     currentContact: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-    contacts: state.auth.user.contacts,
     currentContact: state.chat.currentContact,
     socket: state.chat.socket
 });
 
 export default connect(
     mapStateToProps,
-    { 
-        connectSocket, 
-        disconnectSocket,
-        setCurrentContact
-     }
+    { connectSocket, disconnectSocket }
 ) (withStyles(styles)(Dashboard));

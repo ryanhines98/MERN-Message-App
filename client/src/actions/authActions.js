@@ -9,7 +9,6 @@ import {
     SET_MESSAGES
 } from "./types";
 
-import { getContacts } from "./userActions";
 import { setCurrentContact } from "./chatActions";
 
 // register user
@@ -44,8 +43,6 @@ export const loginUser = userData => dispatch => {
 
             // Set current user
             dispatch(setCurrentUser(decoded));
-            dispatch(getContacts());
-
         })
         .catch(err =>
             dispatch({

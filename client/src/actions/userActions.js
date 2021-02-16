@@ -17,8 +17,8 @@ export const addContact = (email) => dispatch => {
         });
 };
 
-export const getContacts = () => (dispatch) => {
-    axios
+export const getContacts = () => async (dispatch) => {
+    await axios
         .get('api/users/contacts')
         .then(res => {
             const contacts = [].concat(res.data);

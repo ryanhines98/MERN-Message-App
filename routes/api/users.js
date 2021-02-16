@@ -200,6 +200,7 @@ module.exports = function(io) {
     // @access private
     router.get('/contacts', passport.authenticate('jwt', {session: false}), async (req, res) => {
         try {
+            console.log('getting contacts...');
             const user = await User.findById(req.user._id, 'contacts');
             return res.json(user.contacts);
         } catch(err) {

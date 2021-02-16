@@ -18,6 +18,8 @@ import {
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ContactDeleteForm from './ContactDeleteForm';
 
+import { setCurrentContact } from "../../actions/chatActions";
+
 function ContactItem(props) {
 
     // used for options menu
@@ -55,14 +57,16 @@ function ContactItem(props) {
         setDeleteOpen(!deleteOpen);
     }
 
+    const changeContact = (selectContact) => {
+        props.setCurrentContact(selectContact);
+        sessionStorage.setItem('contact', JSON.stringify(selectContact));
+    }
 
     // handler for contact click
     const contactClick = (e) => {
         e.preventDefault();
-        if(props.selectedContact._id !== props.contact._id) {
-            console.log('different contact');
-            props.changeContact(props.contact);
-        }
+        if(props.selectedContact._id !== props.contact._id)
+            changeContact(props.contact);
     }
 
     return(
@@ -118,7 +122,6 @@ function ContactItem(props) {
 
 ContactItem.propTypes = {
     contact: PropTypes.object.isRequired,
-    changeContact: PropTypes.func,
     selectedContact: PropTypes.object
 }
 
@@ -127,5 +130,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(
-    mapStateToProps
+    mapStateToProps,
+    { setCurrentContact }
 )(ContactItem);
