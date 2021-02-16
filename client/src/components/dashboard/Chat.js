@@ -16,7 +16,6 @@ import {
 
 const useStyles = makeStyles((theme) => ({
     toolbar: theme.mixins.toolbar,
-
     box: {
         height: '100%',
         display: 'flex',
@@ -87,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+
 function Chat(props) {
     const mounted = useRef();
     const classes = useStyles();
@@ -99,21 +99,27 @@ function Chat(props) {
 
 
     useEffect(() => {
+        // component did mount
         if(!mounted.current) {
             mounted.current = true;
         } else {
+        // makes scroll bar keep at bottom
+        // as messages get added
             scrollToBottom();
         }
     }, [messages]);
 
+    // on contact change, clear the messages
     useEffect(() => {
         if(mounted.current) setMessages([]); 
     }, [props.contact]);
 
+    // set previous messages received from database
     useEffect(() => {
         if(props.messages) setMessages(props.messages.reverse());
     }, [props.messages]);
 
+    // if the socket has been initiated add message receive event
     useEffect(() => {
         if( Object.keys(props.socket).length !== 0 ) {
             props.socket.on('message', function(msg) {
@@ -122,9 +128,9 @@ function Chat(props) {
         }
     }, [props.socket]);
 
-
-
-
+    // makes scroll bar follow the msgBttm reference
+    // to keep it at the bottom when messages are added and 
+    // extend window downward
     const scrollToBottom = () => {
         msgBttm.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -133,8 +139,17 @@ function Chat(props) {
         setMessage(e.target.value);
     }
 
+    // for submitting messages
     const onSubmit = (e) => {
-        if( props.contact._id && (e.type === "click" || e.key === "Enter") ) {
+        // if a contact is chosen or chat is not empty, 
+        // the message is not whitespace,
+        // and it is the button click or 'enter' key, 
+        // do message submission
+        if( props.contact._id && 
+            /\S/.test(message) &&
+            (e.type === "click" || e.key === "Enter") 
+        ) {
+            console.log(message);
             const msg = {
                 conversation: props.contact.conversation,
                 sender: props.userid,

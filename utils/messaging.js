@@ -2,8 +2,6 @@ const Message = require('../models/Message');
 
 const submitMessage = async (msg) => {
 
-    console.log(msg);
-
     const newMsg = new Message({
         ...msg
     });
