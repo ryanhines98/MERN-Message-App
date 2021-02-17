@@ -1,7 +1,7 @@
 import {
     SET_CURRENT_USER,
     USER_LOADING,
-    UPDATE_CONTACT
+    UPDATE_CONTACTS
 } from "../actions/types";
 
 const isEmpty = require("is-empty");
@@ -28,7 +28,7 @@ export default function authReducer(state = initialState, action) {
                 ...state,
                 loading: true
             };
-        case UPDATE_CONTACT:
+        case UPDATE_CONTACTS:
             return {
                 ...state,
                 user: {

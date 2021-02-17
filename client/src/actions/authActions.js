@@ -78,8 +78,10 @@ export const logoutUser = () => dispatch => {
 
     // Remove contact from session storage,
     // set currentContact to empty
-    sessionStorage.removeItem('contact');
+    // sessionStorage.removeItem('contact');
     dispatch(setCurrentContact({}));
+
+    sessionStorage.clear();
 
     // Clear Messages
     dispatch({

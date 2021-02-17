@@ -1,73 +1,89 @@
 import axios from "axios";
-import { GET_ERRORS, UPDATE_CONTACT } from "./types";
+import { GET_ERRORS, UPDATE_CONTACTS } from "./types";
 import { logoutUser } from "./authActions";
 import { setCurrentContact } from "./chatActions";
 
-export const addContact = (email) => dispatch => {
-    axios
-        .post('api/users/contact', { email })
-        .then(res => {
-            dispatch(updateContact(res.data));
-        })
-        .catch(err => {
-            dispatch({
-                type: GET_ERRORS,
-                payload: err.response.data
-            });
-        });
-};
-
-export const getContacts = () => async (dispatch) => {
-    await axios
-        .get('api/users/contacts')
-        .then(res => {
-            const contacts = [].concat(res.data);
-            dispatch({
-                type: UPDATE_CONTACT,
-                payload: contacts
-            })
-        })
-        .catch(err => {
-            console.log(err);
-        });
-};
-
-export const updateContact = (contact) => (dispatch, getState) => {
-    const contacts = [].concat(getState().auth.user.contacts);
-
-    // if contact is not empty
-    if( !(Object.keys(contact).length === 0) ) {
-        contacts.push(contact);
-    }
-
+export const updateContacts = (contacts) => (dispatch) => {
     dispatch({
-        type: UPDATE_CONTACT,
+        type: UPDATE_CONTACTS,
         payload: contacts
     });
 }
 
-export const deleteContact = (contact) => (dispatch, getState) => {
+export const getContacts = () => async (dispatch) => {
+    if(sessionStorage.contacts) {
+        dispatch({
+            type: UPDATE_CONTACTS,
+            payload: JSON.parse(sessionStorage.contacts)
+        });
+    } else {
+        const sessionContacts = await axios
+            .get('api/users/contacts')
+            .then(res => {
+                const contacts = [].concat(res.data);
+                dispatch({
+                    type: UPDATE_CONTACTS,
+                    payload: contacts
+                });
+                return contacts;
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        
+        sessionStorage.setItem('contacts', JSON.stringify(sessionContacts));
+    }
+};
 
+export const addContact = (email) => (dispatch, getState) => {
+    // create new contacts array to update redux store
     const contacts = [].concat(getState().auth.user.contacts);
 
+    // pass chosen contact email 
+    axios
+        .post('api/users/contact', { email })
+        .then((res) => {
+            // push added contact to new contacts array
+            contacts.push(res.data);
+            // then dispatch the contacts to redux store
+            dispatch(updateContacts(contacts));
+            // update session contacts
+            sessionStorage.setItem('contacts', JSON.stringify(contacts));
+        })
+        .catch(err => {
+            dispatch(setErrors(err.response.data));
+        });
+};
+
+export const deleteContact = (contact) => (dispatch, getState) => {
+
+    // create new contacts array to update redux store
+    const contacts = [].concat(getState().auth.user.contacts);
+
+    // check if passed contact is not empty
+    // then find and remove the chosen contact from the array
     if( !(Object.keys(contact).length === 0) ) {
         for(let i =0; i < contacts.length; i++) {
             if( contacts[i] === contact ) contacts.splice(i, 1);
         }
     }
 
-    if( getState().chat.currentContact._id === contact._id ) {
-        dispatch(setCurrentContact({}));
-        sessionStorage.removeItem('contact');
-    }
-
+    // pass chosen contact to database to remove
     axios
         .delete('api/users/contact', { data: contact } )
         .then(() => {
-            dispatch({
-                type: UPDATE_CONTACT,
-                payload: contacts
-            });
+            // update redux state for user's contacts
+            dispatch(updateContacts(contacts));
+
+            // if the chosen contact is the current contact,
+            // then set current contact to empty and remove from session storage
+            if( getState().chat.currentContact._id === contact._id ) {
+                dispatch(setCurrentContact({}));
+                sessionStorage.removeItem('contact');
+            }
+
+            // update session storage contacts
+            sessionStorage.setItem('contacts', JSON.stringify(contacts));
         })
         .catch(err => {
             console.log(err);
