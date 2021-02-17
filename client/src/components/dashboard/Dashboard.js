@@ -6,17 +6,33 @@ import Chat from './Chat';
 import { connectSocket, disconnectSocket } from "../../actions/chatActions";
 import { withStyles } from "@material-ui/core/styles";
 
+import {
+    Button
+} from "@material-ui/core";
+import RecentActorsIcon from '@material-ui/icons/RecentActors';
+
 const styles = (theme) => {
     return({
         toolbar: theme.mixins.toolbar,
-        button: {
+        bttnCtn: {
             position: 'absolute',
-            zIndex: theme.zIndex.drawer+1
+            zIndex: theme.zIndex.drawer
+        },
+        button: {
+            marginTop: 10,
+            right: 5
         }
     });
 }
 
  class Dashboard extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            drawerOpen: false
+        }
+    }
 
     componentDidMount() {
         this.props.connectSocket();
@@ -28,12 +44,33 @@ const styles = (theme) => {
        this.props.disconnectSocket();
     }
 
+    setDrawer = () => {
+        this.setState({ drawerOpen: !(this.state.drawerOpen) });
+    }
+
     render() {
-        //const {classes} = this.props;
+        const {classes} = this.props;
         return (
             <div style={{ height: '100%', position: 'relative' }}>
-                <Contacts />
+
+                {/* Contacts Drawer Open Button */}
+                <div className={classes.bttnCtn}>
+                    <div className={classes.toolbar}/>
+                    <Button 
+                        className={classes.button}
+                        variant='contained'
+                        color='primary'
+                        size='large'
+                        disableElevation
+                        onClick={ this.setDrawer }
+                    >
+                        <RecentActorsIcon />
+                    </Button>
+                </div>
+
+                <Contacts open={this.state.drawerOpen} setDrawer={this.setDrawer} />
                 <Chat />
+
             </div>
         );
     }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from "react-redux";
@@ -30,17 +30,6 @@ const useStyles = makeStyles((theme) => ({
 
 function Navbar(props) {
 
-    //const [dashboard, setDashboard] = useState(false);
-
-    useEffect(() => {
-        // console.log(window.location.pathname);
-        // if (window.location.pathname === '/dashboard')
-        //     setDashboard(true);
-        // else {
-        //     setDashboard(false);
-        // }
-    });
-
     const onLogoutClick = e => {
         e.preventDefault();
         props.logoutUser();
@@ -55,12 +44,6 @@ function Navbar(props) {
                     justifyContent: 'space-between', 
                     width: '100%'
                 }}>
-                    
-                    {/* {  dashboard &&
-                        <div>
-                            <Typography> test </Typography>
-                        </div>
-                    } */}
 
                     <div style={{ display: 'flex', flexDirection: 'row'}}>
                         <div className={classes.item}>
