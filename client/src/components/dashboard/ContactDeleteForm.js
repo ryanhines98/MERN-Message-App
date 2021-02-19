@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -8,44 +8,48 @@ import {
     DialogContent,
     DialogContentText,
     DialogActions,
-    Button,
+    Button
 } from "@material-ui/core";
 import { deleteContact } from "../../actions/userActions";
 
-function ContactDeleteForm(props) {
+class ContactDeleteForm extends Component {
 
-    const handleDelete = (e) => {
-        props.deleteContact(props.contact);
-        props.toggleOpen(e);
+    handleDelete = (e) => {
+        this.props.deleteContact(this.props.contact, this.setAlert);
+        this.props.toggleOpen(e);
     }
 
-    return(
-        <Dialog
-            open={props.open}
-            disableBackdropClick
-            onClick={ (e) => e.stopPropagation() }
-        >
-            <DialogTitle>
-                {"Delete Contact?"}
-            </DialogTitle>
+    render() {
+        return(
+            <div>
+                <Dialog
+                    open={this.props.open}
+                    disableBackdropClick
+                    onClick={ (e) => e.stopPropagation() }
+                >
+                    <DialogTitle>
+                        {"Delete Contact?"}
+                    </DialogTitle>
 
-            <DialogContent>
-                <DialogContentText>
-                    Are you sure you would like to delete this contact?
-                </DialogContentText>
-            </DialogContent>
+                    <DialogContent>
+                        <DialogContentText>
+                            Are you sure you would like to delete this contact?
+                        </DialogContentText>
+                    </DialogContent>
 
-            <DialogActions>
-                <Button onClick={(e) => handleDelete(e)} color='primary'>
-                    Yes
-                </Button>
+                    <DialogActions>
+                        <Button onClick={(e) => this.handleDelete(e)} color='primary'>
+                            Yes
+                        </Button>
 
-                <Button onClick={props.toggleOpen} color='primary'>
-                    No
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
+                        <Button onClick={this.props.toggleOpen} color='primary'>
+                            No
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        );
+    }
 }
 
 ContactDeleteForm.propTypes = {

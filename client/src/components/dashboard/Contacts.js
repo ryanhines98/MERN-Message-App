@@ -5,16 +5,16 @@ import {    ListSubheader,
             IconButton,
             Drawer,
             List,
-            Divider
+            Divider,
+            Snackbar
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import ContactForm from "./ContactForm";
+import ContactAddForm from "./ContactAddForm";
 import ContactItem from "./ContactItem";
-
 import { getContacts } from "../../actions/userActions";
 
 const styles = (theme) => {
@@ -40,14 +40,13 @@ class Contacts extends Component {
 
     constructor(props) {
         super(props);
-
         this.props.getContacts();
-
         this.state = {
-            formOpen: false
+            formOpen: false,
+            alertOpen: false,
+            alertMsg: ''
         }
     }
-
 
     // handlers for add contact form
     handleClickOpen = () => {
@@ -59,50 +58,52 @@ class Contacts extends Component {
     };
 
     render() {
-
         const {classes} = this.props;
 
         return(
-            <Drawer
-                variant='persistent'
-                id='contacts'
-                open={this.props.open}
-            >
-                <div className={classes.toolbar} />
+            <div>
+                <Drawer
+                    variant='persistent'
+                    id='contacts'
+                    open={this.props.open}
+                >
+                    <div className={classes.toolbar} />
 
-                <List className={classes.list}>
-                    <ListSubheader>
-                        <div className={classes.subheader}>
-                            <IconButton
-                                color='primary'
-                                onClick={this.props.setDrawer}
-                            >
-                                <ArrowBackIcon />
-                            </IconButton>
+                    <List className={classes.list}>
+                        <ListSubheader>
+                            <div className={classes.subheader}>
+                                <IconButton
+                                    color='primary'
+                                    onClick={this.props.setDrawer}
+                                    disableRipple
+                                >
+                                    <ArrowBackIcon />
+                                </IconButton>
 
-                            <span className={classes.title}>
-                                CONTACTS
-                            </span>
+                                <span className={classes.title}>
+                                    CONTACTS
+                                </span>
 
-                            {/* Add Button for adding a Contact */}
-                            <IconButton 
-                                color='primary'
-                                onClick={this.handleClickOpen}
-                            > 
-                                <AddIcon/> 
-                            </IconButton>
-                        </div>
+                                {/* Add Button for adding a Contact */}
+                                <IconButton 
+                                    color='primary'
+                                    onClick={this.handleClickOpen}
+                                > 
+                                    <AddIcon/> 
+                                </IconButton>
+                            </div>
 
-                        {/* Form for adding a Contact on button Press */}
-                        <ContactForm open={this.state.formOpen} handleClose={this.handleClose} />
-                    </ListSubheader>
+                            {/* Form for adding a Contact on button Press */}
+                            <ContactAddForm open={this.state.formOpen} handleClose={this.handleClose} />
+                        </ListSubheader>
 
-                    <Divider />
+                        <Divider />
 
-                    { this.props.contacts.map((contact, index) => <ContactItem contact={contact} key={index} />) }
+                        { this.props.contacts.map((contact, index) => <ContactItem contact={contact} key={index} />) }
 
-                </List>
-            </Drawer>
+                    </List>
+                </Drawer>
+            </div>
         );
     }
 }
@@ -111,7 +112,8 @@ class Contacts extends Component {
 Contacts.propTypes = {
     contacts: PropTypes.array,
     open: PropTypes.bool,
-    setDrawer: PropTypes.func
+    setDrawer: PropTypes.func,
+    getContacts: PropTypes.func
 };
 
 const mapStateToProps = state => ({

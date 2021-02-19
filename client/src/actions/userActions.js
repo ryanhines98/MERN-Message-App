@@ -35,12 +35,12 @@ export const getContacts = () => async (dispatch) => {
     }
 };
 
-export const addContact = (email) => (dispatch, getState) => {
+export const addContact = (email, setAlert) => async (dispatch, getState) => {
     // create new contacts array to update redux store
     const contacts = [].concat(getState().auth.user.contacts);
 
     // pass chosen contact email 
-    axios
+    await axios
         .post('api/users/contact', { email })
         .then((res) => {
             // push added contact to new contacts array
@@ -49,6 +49,9 @@ export const addContact = (email) => (dispatch, getState) => {
             dispatch(updateContacts(contacts));
             // update session contacts
             sessionStorage.setItem('contacts', JSON.stringify(contacts));
+
+            // display alert that adding contact was successful
+            setAlert();
         })
         .catch(err => {
             dispatch(setErrors(err.response.data));

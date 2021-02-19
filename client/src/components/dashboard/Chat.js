@@ -66,18 +66,20 @@ const useStyles = makeStyles((theme) => ({
         height: 10
     },
     msgContainer: {
-        margin: 5
+        marginTop: 10
     },
     msgTo: {
         width: '50%',
-        float: 'right'
+        float: 'right',
+        marginRight: 10
     },
     msgFrom: {
         width: '50%',
-        float: 'left'
+        float: 'left',
+        marginLeft: 10
     },
     message: {
-        padding: 5,
+        padding: '0.1em 0.8em',
         float: 'inherit',
         backgroundColor: theme.palette.primary.main
     },
@@ -127,6 +129,8 @@ function Chat(props) {
             });
         }
     }, [props.socket]);
+
+
 
     // makes scroll bar follow the msgBttm reference
     // to keep it at the bottom when messages are added and 
