@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { deleteAccount } from "../../actions/userActions";
+import { updateEmail } from "../../actions/userActions";
+
 import { 
     Container,
     Typography,
@@ -11,12 +17,11 @@ import {
     DialogContent,
     DialogTitle,
     DialogActions,
-    DialogContentText
+    DialogContentText,
+    IconButton,
+    TextField
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { deleteAccount } from "../../actions/userActions";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -28,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex', 
         justifyContent: 'center',
         marginBottom:10
+    },
+    error: {
+        color: 'red'
     }
 }));
 
@@ -35,10 +43,16 @@ function Account(props) {
     const classes = useStyles();
 
     const [open, setOpen] = useState(false);
+    const [input, setInput] = useState(false);
+    const [email, setEmail] = useState('');
 
     const handleDelete = () => {
-        console.log('handle delete');
         props.deleteAccount();
+    }
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        props.updateEmail(email);
     }
 
     return(
@@ -52,6 +66,21 @@ function Account(props) {
                 style={{minHeight: '100vh'}}  
             >
                 <Grid item xs={12}>
+                    <div>
+                        <IconButton href='/dashboard' edge='start'>
+                            <ArrowBackIcon />
+                        </IconButton>
+                        <Typography 
+                            display='inline' 
+                            style={{
+                                position: 'relative',
+                                top: 2
+                            }}
+                        >
+                            Back to Dashboard
+                        </Typography>
+                    </div>
+
                     <Paper
                         variant='outlined'
                         className={classes.paper}
@@ -60,8 +89,47 @@ function Account(props) {
                             <Avatar />
                         </div>
                         <Typography className={classes.row}> {props.user.name} </Typography>
+
                         <Divider style={{ marginBottom: 10 }}/>
-                        <Typography className={classes.row}> Email: {props.user.email} </Typography>
+
+                        <div className={classes.row}>
+                            <Typography> Email: {props.user.email} </Typography>
+
+                            {!input && 
+                                <Button 
+                                    size='small' 
+                                    variant='outlined'
+                                    style={{ 
+                                        marginLeft: 10,
+                                        position: 'relative',
+                                        bottom:2
+                                    }}
+                                    onClick={() => setInput(true)}
+                                >
+                                    Change
+                                </Button>
+                            }
+                        </div>
+
+                        { input && 
+                            <div className={classes.row}>
+                                <div style={{ flexDirection: 'column' }}>
+                                    <form onSubmit={onSubmit}>
+                                        <TextField
+                                            variant='outlined'
+                                            placeholder='Enter New Email...'
+                                            size='small'
+                                            onChange={(e) => { e.preventDefault(); setEmail(e.target.value)}}
+                                            error={ props.errors.email }
+                                        />
+                                    </form>
+
+                                    <div className={classes.error}>
+                                        {props.errors.email}
+                                    </div>
+                                </div>
+                            </div>
+                        }
 
                         <div style={{ height: '3rem' }} />
 
@@ -72,8 +140,11 @@ function Account(props) {
                         > 
                             Delete Account 
                         </Button>
+
                     </Paper>
 
+
+                    {/* Display for Account Delete */}
                     <Dialog
                         open={open}
                         disableBackdropClick
@@ -107,15 +178,19 @@ function Account(props) {
 }
 
 Account.propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    deleteAccount: PropTypes.func.isRequired,
+    updateEmail: PropTypes.func.isRequired,
+    errors: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-    user: state.auth.user
+    user: state.auth.user,
+    errors: state.errors
 });
 
 export default 
 connect(
     mapStateToProps,
-    { deleteAccount }
+    { deleteAccount, updateEmail }
 )(Account);

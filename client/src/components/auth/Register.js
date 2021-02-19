@@ -86,7 +86,13 @@ function Register(props) {
                             <IconButton href='/' edge='start'>
                                 <ArrowBackIcon />
                             </IconButton>
-                            <Typography display='inline'>
+                            <Typography 
+                                display='inline'
+                                style={{
+                                    position: 'relative',
+                                    top: 2
+                                }}
+                            >
                                 Back to Home
                             </Typography>
                         </div>

@@ -8,6 +8,7 @@ const passport = require('passport');
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
+const emailValidation = require("../../validation/email");
 
 // Load User model
 const User = require("../../models/User");
@@ -256,6 +257,44 @@ module.exports = function(io) {
                     return res.json({ success: true });
                 })
                 .catch(err => console.log(err));
+        } catch(err) {
+            return res.status(500).json({ servererror: 'Internal server error.'});
+        }
+    });
+
+    // @route PUT api/users/email
+    // @desc Update User Email
+    // @access private
+    router.put('/email', passport.authenticate('jwt', {session: false}), async (req, res) => {
+        try {
+            const {email} = req.body
+            const errors = emailValidation(email);
+            
+            // ----- EMAIL VALIDATION ----- //
+
+            // check if email is formatted correctly
+            if( Object.keys(errors).length > 0 )
+                return res.status(400).json(errors);
+
+            // check it is not the user's current email
+            if( req.user.email === email)
+                return res.status(400).json({ email: 'Already your email' });
+            
+            // check if email is already registered under another user
+            await User
+                .findOne({ email: email })
+                .then( user => {
+                    if(user)
+                        return res.status(400).json({ email: 'Email is currently registered' });
+                });
+            
+            // update user's email
+            await User
+                .updateOne({ _id: req.user._id }, {$set: { email: email }})
+                .then(query => {
+                    return res.json(query);
+                });
+
         } catch(err) {
             return res.status(500).json({ servererror: 'Internal server error.'});
         }

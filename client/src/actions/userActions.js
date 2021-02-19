@@ -100,8 +100,10 @@ export const setErrors = (errors) => dispatch => {
     });
 };
 
-export const deleteAccount = () => dispatch => {
-    axios
+
+// ------- ACCOUNT PAGE ACTIONS ------- //
+export const deleteAccount = () => async dispatch => {
+    await axios
         .delete('api/users/account')
         .then(res => {
             console.log(res);
@@ -110,4 +112,14 @@ export const deleteAccount = () => dispatch => {
         .catch(err => {
             console.log(err);
         });
+}
+
+export const updateEmail = email => async dispatch => {
+
+    await axios
+        .put('api/users/email', { email } )
+        .then(() => {
+            console.log(email + ' updated');
+        })
+        .catch( err => dispatch(setErrors(err.response.data)) );
 }

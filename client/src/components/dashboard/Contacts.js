@@ -5,8 +5,7 @@ import {    ListSubheader,
             IconButton,
             Drawer,
             List,
-            Divider,
-            Snackbar
+            Divider
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
