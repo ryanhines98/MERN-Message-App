@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const keys = require("../../config/keys");
+// const jwt = require("jsonwebtoken");
+// const keys = require("../../config/keys");
 const passport = require('passport');
 
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 const emailValidation = require("../../validation/email");
+const generateToken = require('../../validation/token');
 
 // Load User model
 const User = require("../../models/User");
@@ -94,21 +95,11 @@ module.exports = function(io) {
                         contacts: []
                     };
 
-                    // sign token
-                    // include secret for passport
-                    jwt.sign(
-                        payload,
-                        keys.secretOrKey,
-                        {
-                            expiresIn: 10800 // 3 hours in seconds
-                        },
-                        (err, token) => {
-                            res.json({
-                                success: true,
-                                token: "Bearer " + token // put bearer in front for passport
-                            });
-                        }
-                    );
+                    const token = generateToken(payload);
+                    return res.json({
+                        success: true,
+                        token: "Bearer " + token
+                    });
                 } 
                 // else return error
                 else {
@@ -290,9 +281,25 @@ module.exports = function(io) {
             
             // update user's email
             await User
-                .updateOne({ _id: req.user._id }, {$set: { email: email }})
-                .then(query => {
-                    return res.json(query);
+                .updateOne({ _id: req.user._id }, {$set: { email: email }});
+
+            await User
+                .findById(req.user._id)
+                .then((user) => {
+                    //construct payload for new token
+                    const payload = {
+                        id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        contacts: []
+                    }
+
+                    const token = generateToken(payload);
+
+                    res.json({ 
+                        success: true,
+                        token: "Bearer " + token
+                    });
                 });
 
         } catch(err) {

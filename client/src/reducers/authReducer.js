@@ -1,7 +1,8 @@
 import {
     SET_CURRENT_USER,
     USER_LOADING,
-    UPDATE_CONTACTS
+    UPDATE_CONTACTS,
+    SET_EMAIL
 } from "../actions/types";
 
 const isEmpty = require("is-empty");
@@ -34,6 +35,14 @@ export default function authReducer(state = initialState, action) {
                 user: {
                     ...state.user,
                     contacts: action.payload
+                }
+            };
+        case SET_EMAIL: 
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    email: action.payload
                 }
             };
         default:

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { GET_ERRORS, UPDATE_CONTACTS } from "./types";
-import { logoutUser } from "./authActions";
+import { GET_ERRORS, UPDATE_CONTACTS, SET_EMAIL } from "./types";
+import { logoutUser, applyToken } from "./authActions";
 import { setCurrentContact } from "./chatActions";
 
 export const updateContacts = (contacts) => (dispatch) => {
@@ -102,6 +102,8 @@ export const setErrors = (errors) => dispatch => {
 
 
 // ------- ACCOUNT PAGE ACTIONS ------- //
+
+// delete account
 export const deleteAccount = () => async dispatch => {
     await axios
         .delete('api/users/account')
@@ -114,12 +116,19 @@ export const deleteAccount = () => async dispatch => {
         });
 }
 
+// change email and update to database
 export const updateEmail = email => async dispatch => {
 
     await axios
         .put('api/users/email', { email } )
-        .then(() => {
-            console.log(email + ' updated');
+        .then((res) => {
+           
+            dispatch(applyToken(res.data.token));
+
+            dispatch({
+                type: SET_EMAIL,
+                payload: email
+            });
         })
         .catch( err => dispatch(setErrors(err.response.data)) );
 }

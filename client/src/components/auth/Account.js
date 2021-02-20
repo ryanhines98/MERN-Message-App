@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { deleteAccount } from "../../actions/userActions";
-import { updateEmail } from "../../actions/userActions";
+import { deleteAccount, updateEmail, setErrors } from "../../actions/userActions";
 
 import { 
     Container,
@@ -41,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
 
 function Account(props) {
     const classes = useStyles();
+    const mounted = useRef();
+
+    const prevEmail = useRef();
 
     const [open, setOpen] = useState(false);
     const [input, setInput] = useState(false);
@@ -53,7 +55,21 @@ function Account(props) {
     const onSubmit = (e) => {
         e.preventDefault();
         props.updateEmail(email);
+        props.setErrors({});
     }
+
+    useEffect(() => {
+        if(!mounted.current){
+            prevEmail.current = props.user.email;
+            mounted.current = true;
+        } else {
+            if(prevEmail.current !== props.user.email) {
+                setInput(false);
+                prevEmail.current = props.user.email;
+            }
+        }
+    }, [props.user]);
+    
 
     return(
         <Container>
@@ -181,7 +197,8 @@ Account.propTypes = {
     user: PropTypes.object.isRequired,
     deleteAccount: PropTypes.func.isRequired,
     updateEmail: PropTypes.func.isRequired,
-    errors: PropTypes.object
+    errors: PropTypes.object,
+    setErrors: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -192,5 +209,5 @@ const mapStateToProps = state => ({
 export default 
 connect(
     mapStateToProps,
-    { deleteAccount, updateEmail }
+    { deleteAccount, updateEmail, setErrors }
 )(Account);
