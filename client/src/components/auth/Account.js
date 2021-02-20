@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { deleteAccount, updateEmail, setErrors } from "../../actions/userActions";
+import { deleteAccount, updateEmail } from "../../actions/userActions";
 
 import { 
     Container,
@@ -55,7 +55,6 @@ function Account(props) {
     const onSubmit = (e) => {
         e.preventDefault();
         props.updateEmail(email);
-        props.setErrors({});
     }
 
     useEffect(() => {
@@ -136,7 +135,7 @@ function Account(props) {
                                             placeholder='Enter New Email...'
                                             size='small'
                                             onChange={(e) => { e.preventDefault(); setEmail(e.target.value)}}
-                                            error={ props.errors.email }
+                                            error={ props.errors.email ? true : false }
                                         />
                                     </form>
 
@@ -197,8 +196,7 @@ Account.propTypes = {
     user: PropTypes.object.isRequired,
     deleteAccount: PropTypes.func.isRequired,
     updateEmail: PropTypes.func.isRequired,
-    errors: PropTypes.object,
-    setErrors: PropTypes.func.isRequired
+    errors: PropTypes.object
 };
 
 const mapStateToProps = state => ({
@@ -209,5 +207,5 @@ const mapStateToProps = state => ({
 export default 
 connect(
     mapStateToProps,
-    { deleteAccount, updateEmail, setErrors }
+    { deleteAccount, updateEmail }
 )(Account);

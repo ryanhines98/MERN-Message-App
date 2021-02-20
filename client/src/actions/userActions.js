@@ -117,18 +117,26 @@ export const deleteAccount = () => async dispatch => {
 }
 
 // change email and update to database
-export const updateEmail = email => async dispatch => {
+export const updateEmail = email => async (dispatch, getState) => {
+
+    const { errors } = getState();
 
     await axios
         .put('api/users/email', { email } )
         .then((res) => {
            
+            // get regenerated token to set for browser
             dispatch(applyToken(res.data.token));
 
+            // change redux store
             dispatch({
                 type: SET_EMAIL,
                 payload: email
             });
+
+
+            if( Object.keys(errors).length > 0)
+                dispatch(setErrors({}));
         })
         .catch( err => dispatch(setErrors(err.response.data)) );
 }
