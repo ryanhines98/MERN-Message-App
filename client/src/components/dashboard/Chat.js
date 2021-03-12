@@ -24,7 +24,11 @@ const useStyles = makeStyles((theme) => ({
     container: {
         display: 'flex',
         flexFlow: 'column',
-        height: '100%'
+        height: '100%',
+        [theme.breakpoints.down('xs')]: {
+            marginLeft: 15,
+            marginTop: 5
+        }
     },
     root: {
         margin: 10,

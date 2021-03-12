@@ -18,7 +18,8 @@ import {
     DialogActions,
     DialogContentText,
     IconButton,
-    TextField
+    TextField,
+    Box
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
@@ -31,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
     row: {
         display: 'flex', 
         justifyContent: 'center',
-        marginBottom:10
+        marginBottom: 10,
+        
     },
     error: {
         color: 'red'
@@ -108,7 +110,7 @@ function Account(props) {
                         <Divider style={{ marginBottom: 10 }}/>
 
                         <div className={classes.row}>
-                            <Typography> Email: {props.user.email} </Typography>
+                            <Typography> Email:{props.user.email}</Typography>
 
                             {!input && 
                                 <Button 
