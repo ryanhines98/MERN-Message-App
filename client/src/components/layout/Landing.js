@@ -4,7 +4,8 @@ import {
   Container,
   Grid,
   Typography,
-  Button
+  Button,
+  Box
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import MessageIcon from '@material-ui/icons/Message';
@@ -17,17 +18,26 @@ const useStyles = makeStyles((theme) => ({
         marginTop: 10
     },
     buttons: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      width: '100%'
+      [theme.breakpoints.up('xs')]: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        width: '100%'
+      },
+      [theme.breakpoints.down('xs')]: {
+        display: 'flex',
+        flexFlow: 'column'
+      }
     },
     button: {
-
+      [theme.breakpoints.down('xs')]: {
+        marginTop: 10
+      }
     }
 }));
 
 function Landing() {
   const classes = useStyles();
+  
 
   return (
     <Container maxWidth='md'>
@@ -40,14 +50,18 @@ function Landing() {
         style={{minHeight: '100vh'}}  
       >
         <Grid item xs={12}>
-          <Typography variant='h4'>
-            Welcome to MERN-Messaging <MessageIcon fontSize='large' color='primary' />
+          <Typography component='div'> 
+            <Box 
+              textAlign='center'
+              fontSize='h4.fontSize'
+            >
+              Welcome to MERN-Messaging <MessageIcon fontSize='large' color='primary' />
+            </Box>
           </Typography>
 
           <div className={classes.paper}>
             <div className={classes.buttons}>
                 <Button
-                  className={classes.button}
                   variant='contained'
                   href='/login'
                   color= 'primary'
@@ -57,11 +71,11 @@ function Landing() {
                 </Button>
 
                 <Button
-                  className={classes.button}
                   variant='contained'
                   href='/register'
                   color= 'primary'
                   size='large'
+                  className={classes.button}
                 >
                   Register
                 </Button>

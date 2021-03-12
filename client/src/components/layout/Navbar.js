@@ -25,6 +25,11 @@ const useStyles = makeStyles((theme) => ({
     },
     icon: {
         marginRight: theme.spacing(2)
+    },
+    textHide: {
+        [theme.breakpoints.down('xs')]: {
+            display: 'none'
+        }
     }
 }));
 
@@ -50,8 +55,7 @@ function Navbar(props) {
                             <CodeIcon fontSize='large' className={classes.icon}/>
                         </div>
                         <div className={classes.item}>
-                            <Typography variant='h5'>
-                                
+                            <Typography variant='h5' className={classes.textHide}>  
                                 MERN Message Application
                             </Typography>
                         </div>
